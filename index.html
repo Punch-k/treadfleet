@@ -3,698 +3,489 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TreadFleet · AI operations for commercial tire crews</title>
+<title>TreadFleet · The digital dispatcher for commercial tire crews</title>
+<meta name="description" content="TreadFleet turns a technician's voice note at the truck into the work order, torque log, stock update and fleet invoice, ready for the owner's approval. Built in Canada for commercial tire crews.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:title" content="TreadFleet · Talk at the truck. The paperwork is done.">
 <meta property="og:description" content="Voice notes become work orders, torque logs and fleet invoices for Canadian commercial tire crews. You approve everything.">
-<meta name="description" content="Speak a note at the truck. Work order, torque log, stock update and fleet invoice are ready for your approval. Built for Canadian commercial tire crews serving trucking fleets.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0f1214; --asphalt:#171b1f; --panel:#1e2328; --line:#2c333a; --text:#eef1f3; --dim:#9aa5ad;
-  --hv:#ffc21a; --hv-ink:#1a1400; --go:#3ccf7a; --warn:#ff7a3d; --blue:#5aa9ff;
-  --r:14px; --shadow:0 20px 50px rgba(0,0,0,.35);
+  --ink:#0d1012; --asphalt:#14181c; --panel:#1b2026; --panel2:#222830; --line:#2b323a; --line2:#39424c;
+  --text:#eef1f3; --soft:#c9d1d7; --dim:#8f9aa3; --hv:#ffc21a; --hv2:#ffd659; --hv-ink:#1a1400;
+  --go:#3ccf7a; --warn:#ff7a3d; --blue:#5aa9ff; --r:16px; --shadow:0 30px 80px rgba(0,0,0,.45);
 }
-*{box-sizing:border-box} html{scroll-behavior:smooth}
-body{margin:0;background:var(--ink);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:inherit} img{max-width:100%}
-.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-h1,h2,h3{font-family:Archivo,Inter,sans-serif;line-height:1.1;margin:0}
+*{box-sizing:border-box} html{scroll-behavior:smooth} html.noanim{scroll-behavior:auto} html.noanim .pv,html.noanim .reveal,html.noanim .sw{transition:none!important}
+body{margin:0;background:var(--ink);color:var(--text);font:16px/1.6 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit} img{max-width:100%;display:block}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+h1,h2,h3,h4{font-family:Archivo,Inter,sans-serif;line-height:1.05;margin:0;letter-spacing:-.02em}
 .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
-.eyebrow{font:600 12px/1 Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--hv)}
-.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:13px 22px;font:600 15px Inter;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s}
-.btn-hv{background:var(--hv);color:var(--hv-ink);box-shadow:0 6px 20px rgba(255,194,26,.25)} .btn-hv:hover{transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)} .btn-ghost:hover{border-color:var(--dim)}
-/* stripes: hazard tape accent */
-.tape{height:6px;background:repeating-linear-gradient(135deg,var(--hv) 0 14px,var(--ink) 14px 28px)}
-
-/* nav */
-nav.top{position:sticky;top:0;z-index:50;background:rgba(15,18,20,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-nav.top .wrap{display:flex;align-items:center;gap:22px;height:64px}
-.logo{display:flex;align-items:center;gap:10px;font:800 20px Archivo;text-decoration:none;letter-spacing:-.01em}
-.logo svg{flex:none}
-.logo small{font:500 10px Inter;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--line);border-radius:6px;padding:2px 6px}
-.navlinks{display:flex;gap:20px;margin-left:auto} .navlinks a{text-decoration:none;color:var(--dim);font-size:14px} .navlinks a:hover{color:var(--text)}
-.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
-.lang button{background:none;border:0;color:var(--dim);font:600 12px Inter;padding:6px 10px;cursor:pointer} .lang button.on{background:var(--text);color:var(--ink)}
-.menu-btn{display:none;background:none;border:1px solid var(--line);color:var(--text);border-radius:10px;width:40px;height:40px;font-size:18px}
-@media(max-width:900px){.navlinks{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;gap:0;background:var(--asphalt);border-bottom:1px solid var(--line)}
-  .navlinks.open{display:flex} .navlinks a{padding:14px 20px;border-top:1px solid var(--line)} .menu-btn{display:block;margin-left:auto} nav.top .btn-hv{display:none}}
-
-/* hero */
-.hero{padding:70px 0 40px;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:-20% -10% auto auto;width:640px;height:640px;background:radial-gradient(circle,rgba(255,194,26,.12),transparent 65%);pointer-events:none}
-.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-.hero h1{font-size:clamp(36px,5.6vw,64px);letter-spacing:-.025em;margin:14px 0 18px}
-.hero h1 em{font-style:normal;color:var(--hv)}
-.hero p.lead{font-size:clamp(17px,1.8vw,20px);color:#cfd6db;max-width:560px;margin:0 0 26px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:700 12px/1 Inter;letter-spacing:.16em;text-transform:uppercase;color:var(--hv)}
+.eyebrow::before{content:"";width:22px;height:2px;background:var(--hv)}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;padding:14px 24px;font:700 15px Inter;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .2s,background .2s}
+.btn-hv{background:var(--hv);color:var(--hv-ink);box-shadow:0 10px 30px rgba(255,194,26,.25)} .btn-hv:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,194,26,.35)}
+.btn-ghost{background:rgba(255,255,255,.03);color:var(--text);border:1px solid var(--line2)} .btn-ghost:hover{border-color:var(--dim)}
+.btn .arr{transition:transform .2s} .btn:hover .arr{transform:translateX(3px)}
+.tape{height:6px;background:repeating-linear-gradient(135deg,var(--hv) 0 14px,var(--ink) 14px 28px);background-size:39.6px 6px;animation:tape 1.6s linear infinite}
+@keyframes tape{to{background-position:39.6px 0}}
+.tread-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;background-image:radial-gradient(1200px 600px at 85% -10%,rgba(255,194,26,.08),transparent 60%),radial-gradient(900px 500px at -10% 30%,rgba(90,169,255,.05),transparent 60%)}
+.tread-bg::after{content:"";position:absolute;inset:-200px;opacity:.06;background-image:repeating-linear-gradient(60deg,transparent 0 38px,#ffc21a 38px 44px,transparent 44px 96px),repeating-linear-gradient(-60deg,transparent 0 38px,#ffc21a 38px 44px,transparent 44px 96px);animation:drift 60s linear infinite}
+@keyframes drift{to{transform:translate(96px,166px)}}
+nav.top{position:sticky;top:0;z-index:60;background:rgba(13,16,18,.78);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex;align-items:center;gap:24px;height:66px}
+.logo{display:flex;align-items:center;gap:10px;font:900 21px Archivo;text-decoration:none;letter-spacing:-.02em}
+.logo svg{animation:spin 14s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
+.navlinks{display:flex;gap:22px;margin-left:auto} .navlinks a{text-decoration:none;color:var(--dim);font-size:14px;font-weight:500;position:relative}
+.navlinks a::after{content:"";position:absolute;left:0;right:100%;bottom:-6px;height:2px;background:var(--hv);transition:right .25s} .navlinks a:hover{color:var(--text)} .navlinks a:hover::after{right:0}
+.lang{display:flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--dim);font:700 12px Inter;padding:7px 11px;cursor:pointer} .lang button.on{background:var(--text);color:var(--ink)}
+.menu-btn{display:none;background:none;border:1px solid var(--line2);color:var(--text);border-radius:12px;width:42px;height:42px;font-size:18px}
+@media(max-width:960px){.navlinks{display:none;position:absolute;top:66px;left:0;right:0;flex-direction:column;gap:0;background:var(--asphalt);border-bottom:1px solid var(--line)}.navlinks.open{display:flex} .navlinks a{padding:15px 20px;border-top:1px solid var(--line)} .navlinks a::after{display:none} .menu-btn{display:block;margin-left:auto} nav.top .btn-hv{display:none}}
+.hero{padding:64px 0 0;position:relative}
+.hero-top{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:end;margin-bottom:38px}
+.hero h1{font-size:clamp(40px,6.4vw,82px);font-weight:900;letter-spacing:-.035em;margin:16px 0 0}
+.hero h1 .hl{color:var(--hv);position:relative}
+.hero .lead{font-size:clamp(17px,1.7vw,20px);color:var(--soft);margin:0 0 22px}
 .hero .ctas{display:flex;gap:12px;flex-wrap:wrap}
-.hero .proof{display:flex;gap:18px;flex-wrap:wrap;margin-top:26px;color:var(--dim);font-size:13.5px}
-.hero .proof span::before{content:"✓";color:var(--go);margin-right:6px;font-weight:700}
-@media(max-width:960px){.hero-grid{grid-template-columns:1fr}.hero{padding-top:40px}}
-
-/* demo device */
-.demo{background:linear-gradient(180deg,var(--panel),var(--asphalt));border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
-.demo-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--dim)}
-.demo-bar b{color:var(--text);font-weight:600}
-.demo-steps{display:flex;gap:6px;margin-left:auto}
-.demo-steps button{width:28px;height:6px;border-radius:4px;border:0;background:var(--line);cursor:pointer;padding:0}
-.demo-steps button.on{background:var(--hv)}
-.demo-body{position:relative;min-height:420px;padding:18px}
-.stage{position:absolute;inset:18px;opacity:0;transform:translateY(8px);transition:opacity .45s,transform .45s;pointer-events:none}
-.stage.on{opacity:1;transform:none;pointer-events:auto}
-.stage h4{margin:0 0 10px;font:600 12px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.memo{background:var(--ink);border:1px solid var(--line);border-radius:16px;padding:16px}
-.memo .rec{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:var(--dim);font-size:13px}
-.dot{width:10px;height:10px;border-radius:50%;background:var(--warn);box-shadow:0 0 0 0 rgba(255,122,61,.6);animation:pulse 1.4s infinite}
-@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(255,122,61,0)}}
-.wave{display:flex;gap:3px;align-items:center;height:30px;margin-left:auto}
-.wave i{display:block;width:3px;border-radius:2px;background:var(--hv);animation:wv 1s infinite ease-in-out}
-@keyframes wv{0%,100%{height:6px}50%{height:26px}}
-.transcript{font-size:15.5px;line-height:1.55;min-height:96px}
-.transcript mark{background:rgba(255,194,26,.18);color:var(--hv);border-radius:4px;padding:0 3px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.chip{font-size:12.5px;border:1px solid var(--line);border-radius:999px;padding:5px 10px;background:var(--panel);opacity:0;transform:scale(.9);transition:all .3s}
-.chip.on{opacity:1;transform:none}
-.chip b{color:var(--hv);font-weight:600}
-.card{background:var(--ink);border:1px solid var(--line);border-radius:16px;padding:16px}
-.wo-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.wo-head .id{font:600 13px "JetBrains Mono";color:var(--hv)}
-.pill{font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 9px}
-.pill.go{background:rgba(60,207,122,.15);color:var(--go)} .pill.warn{background:rgba(255,122,61,.15);color:var(--warn)} .pill.blue{background:rgba(90,169,255,.15);color:var(--blue)}
-.truck{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
-.axle{display:grid;grid-template-columns:repeat(2,34px);gap:10px 60px;justify-content:center;padding:10px;border:1px dashed var(--line);border-radius:12px;position:relative}
-.axle::before{content:"";position:absolute;left:50%;top:8px;bottom:8px;width:2px;background:var(--line)}
-.tire{width:34px;height:52px;border-radius:9px;background:#2a3036;border:2px solid #3a424a;display:flex;align-items:flex-end;justify-content:center;font:600 10px "JetBrains Mono";color:var(--dim);padding-bottom:3px}
-.tire.hit{border-color:var(--hv);background:rgba(255,194,26,.18);color:var(--hv);animation:pop .6s}
-@keyframes pop{50%{transform:scale(1.12)}}
-table.mini{width:100%;border-collapse:collapse;font-size:13px}
-table.mini td{padding:7px 0;border-bottom:1px solid var(--line)} table.mini td:last-child{text-align:right;font-family:"JetBrains Mono"}
-table.mini tr.tot td{border:0;font-weight:700;padding-top:10px}
-.approve{display:flex;gap:10px;margin-top:14px;align-items:center}
-.approve .btn{padding:10px 16px;font-size:14px}
-.sent{color:var(--go);font-weight:600;font-size:14px;opacity:0;transition:opacity .3s} .sent.on{opacity:1}
-.demo-foot{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid var(--line);font-size:12px;color:var(--dim)}
-.demo-foot button{background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:5px 12px;font:600 12px Inter;cursor:pointer}
-
-/* sections */
-section{padding:84px 0;border-top:1px solid var(--line)}
-.sec-head{max-width:760px;margin:0 0 40px}
-.sec-head h2{font-size:clamp(28px,3.8vw,44px);letter-spacing:-.02em;margin:10px 0 14px}
-.sec-head p{color:#c7cfd5;font-size:17px;margin:0}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px} .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-@media(max-width:900px){.grid3,.grid2{grid-template-columns:1fr}}
-.pain{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px}
-.pain .num{font:700 13px "JetBrains Mono";color:var(--hv)} .pain h3{font-size:20px;margin:8px 0 8px} .pain p{color:#c3cbd1;margin:0;font-size:15px}
-
-/* steps */
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
-.step{padding:24px;border-right:1px solid var(--line);background:var(--asphalt)} .step:last-child{border-right:0}
-.step .k{font:700 12px "JetBrains Mono";color:var(--hv);letter-spacing:.1em} .step h3{font-size:20px;margin:10px 0} .step p{color:#c3cbd1;font-size:14.5px;margin:0}
-@media(max-width:900px){.steps{grid-template-columns:1fr}.step{border-right:0;border-bottom:1px solid var(--line)}}
-.learn{margin-top:16px;display:flex;gap:16px;align-items:center;background:linear-gradient(90deg,rgba(255,194,26,.1),transparent);border:1px solid var(--line);border-radius:var(--r);padding:18px 22px;color:#d6dde2}
-.learn b{color:var(--hv)}
-
-/* product tour */
-.tour{display:grid;grid-template-columns:270px 1fr;gap:20px}
-.tabs{display:flex;flex-direction:column;gap:6px}
-.tabs button{text-align:left;background:var(--asphalt);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:14px 16px;cursor:pointer;font:600 15px Inter}
-.tabs button small{display:block;font-weight:400;color:var(--dim);font-size:12.5px;margin-top:3px}
-.tabs button.on{border-color:var(--hv);background:rgba(255,194,26,.08)}
-.screen{background:var(--asphalt);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-height:430px}
-.screen .pane{display:none} .screen .pane.on{display:block;animation:fade .35s}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}}
-.pane .bul{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-.pane .bul div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13.5px;color:#cdd4d9}
-.pane .bul b{display:block;color:var(--text);margin-bottom:3px}
-@media(max-width:900px){.tour{grid-template-columns:1fr}.tabs{flex-direction:row;overflow-x:auto;padding-bottom:6px}.tabs button{flex:0 0 auto}.pane .bul{grid-template-columns:1fr}}
-/* mock UIs */
-.mock{background:var(--ink);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13px}
-.mock .mh{display:flex;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line);color:var(--dim)}
-.board{display:grid;grid-template-columns:110px repeat(5,1fr);font-size:12px}
-.board div{padding:8px 6px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-height:40px}
-.board .h{color:var(--dim);font-weight:600}
-.job{border-radius:6px;padding:4px 6px;font-size:11.5px;font-weight:600}
-.job.y{background:rgba(255,194,26,.18);color:var(--hv)} .job.b{background:rgba(90,169,255,.16);color:var(--blue)} .job.r{background:rgba(255,122,61,.18);color:var(--warn)}
-.health{display:grid;grid-template-columns:90px 1fr 70px;gap:8px 12px;align-items:center;padding:12px}
-.bar{height:9px;border-radius:5px;background:var(--line);overflow:hidden} .bar i{display:block;height:100%;border-radius:5px}
-.tbl{width:100%;border-collapse:collapse} .tbl th,.tbl td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left} .tbl th{color:var(--dim);font-weight:600;font-size:12px}
-.tbl td.r{text-align:right;font-family:"JetBrains Mono"}
-@media(max-width:600px){.board{grid-template-columns:80px repeat(3,1fr)}.board .x{display:none}}
-
-/* plans */
-.plan{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:26px}
-.plan.feature{border-color:var(--hv)}
-.plan h3{font-size:24px} .plan .who{color:var(--dim);margin:6px 0 16px}
-.plan ul{margin:0;padding:0;list-style:none} .plan li{padding:8px 0;border-top:1px solid var(--line);color:#d2d9de;font-size:15px}
-.plan li::before{content:"→ ";color:var(--hv)}
-
-/* targets */
-.targets{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.target{border:1px solid var(--line);border-radius:var(--r);padding:22px;background:var(--asphalt)}
-.target .v{font:800 40px Archivo;color:var(--hv);letter-spacing:-.02em} .target p{margin:6px 0 0;color:#c7cfd5;font-size:14.5px}
-.note{margin-top:14px;font-size:13px;color:var(--dim)}
-@media(max-width:900px){.targets{grid-template-columns:1fr 1fr}}
-
-/* trust */
-.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.trust div{border:1px solid var(--line);border-radius:var(--r);padding:20px;background:var(--panel)}
-.trust h3{font-size:17px;margin-bottom:6px} .trust p{margin:0;color:#c3cbd1;font-size:14px}
-@media(max-width:900px){.trust{grid-template-columns:1fr 1fr}} @media(max-width:520px){.trust,.targets{grid-template-columns:1fr}}
-
-/* form */
-.pilot{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:start}
-.perks{list-style:none;padding:0;margin:20px 0 0} .perks li{padding:10px 0;border-top:1px solid var(--line);color:#d2d9de}
-.perks li::before{content:"✓ ";color:var(--go);font-weight:700}
-form.apply{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-form.apply label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--dim);font-weight:500}
+.hero .chips{display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;color:var(--dim);font-size:13.5px}
+.hero .chips span::before{content:"✓";color:var(--go);margin-right:6px;font-weight:800}
+@media(max-width:960px){.hero-top{grid-template-columns:1fr}}
+.pipe{position:relative;display:grid;grid-template-columns:290px 210px 1fr;align-items:center;background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0));border:1px solid var(--line);border-radius:28px;padding:26px;box-shadow:var(--shadow)}
+.pipe-labels{display:grid;grid-template-columns:290px 210px 1fr;margin:0 0 10px;padding:0 26px;font:700 11px Inter;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.pipe-labels span:nth-child(2){text-align:center}
+.clock{position:absolute;top:-16px;right:26px;background:var(--panel2);border:1px solid var(--line2);border-radius:999px;padding:6px 14px;font:700 13px "JetBrains Mono";color:var(--soft);display:flex;gap:10px;align-items:center;z-index:4}
+.clock .saved{color:var(--go)}
+.ph{width:262px;height:500px;margin:0 auto;border:9px solid #050607;border-radius:42px;background:linear-gradient(180deg,#111518,#0b0e10);position:relative;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.ph::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:84px;height:20px;border-radius:12px;background:#050607;z-index:3}
+.ph-in{position:absolute;inset:0;padding:38px 14px 14px;display:flex;flex-direction:column}
+.ph-job{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:12px}
+.ph-job b{display:block;font-size:13.5px;margin-top:2px} .ph-job .tag{display:inline-block;font:700 10px Inter;color:var(--warn);background:rgba(255,122,61,.14);border-radius:6px;padding:2px 6px}
+.ph-trans{flex:1;margin:12px 0;font-size:14px;line-height:1.5;color:var(--soft);overflow:hidden}
+.ph-trans .w{opacity:0;transition:opacity .15s} .ph-trans .w.on{opacity:1} .ph-trans .k{color:var(--hv);font-weight:700}
+.ph-photos{display:flex;gap:6px;margin-bottom:10px}
+.ph-photos i{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#2e353d,#1a1f24);border:1px solid var(--line2);position:relative;opacity:0;transform:scale(.7);transition:all .35s cubic-bezier(.2,1.5,.4,1)}
+.ph-photos i.on{opacity:1;transform:none}
+.ph-photos i::after{content:"";position:absolute;inset:12px;border-radius:50%;border:4px solid #4a535c;box-shadow:inset 0 0 0 5px #2a3036}
+.ph-rec{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.recdot{width:38px;height:38px;border-radius:50%;background:var(--warn);flex:none;box-shadow:0 0 0 0 rgba(255,122,61,.5)}
+.rec-on .recdot{animation:ring 1.4s infinite} @keyframes ring{70%{box-shadow:0 0 0 14px rgba(255,122,61,0)}}
+.wave{display:flex;gap:3px;align-items:center;height:28px;flex:1}
+.wave i{flex:1;max-width:4px;border-radius:2px;background:var(--hv);height:4px;transition:height .1s}
+.ph-rec .t{font:700 12px "JetBrains Mono";color:var(--dim)}
+.brain{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.flow{position:absolute;top:50%;left:-10px;right:-10px;height:2px;background:var(--line)}
+.flow i{position:absolute;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--hv);box-shadow:0 0 14px var(--hv);opacity:0}
+.working .flow i{animation:flow 1.6s linear infinite} .working .flow i:nth-child(2){animation-delay:.53s} .working .flow i:nth-child(3){animation-delay:1.06s}
+@keyframes flow{0%{left:0;opacity:0}10%{opacity:1}90%{opacity:1}100%{left:100%;opacity:0}}
+.core{position:relative;z-index:2;width:118px;height:118px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#2d343c,#14181c);border:1px solid var(--line2);display:grid;place-items:center;box-shadow:0 0 0 10px rgba(255,194,26,.04);transition:box-shadow .4s}
+.working .core{box-shadow:0 0 0 10px rgba(255,194,26,.08),0 0 60px rgba(255,194,26,.2)}
+.core svg{width:62px;height:62px} .working .core svg{animation:spin 3s linear infinite}
+.steps-mini{position:relative;z-index:2;list-style:none;margin:0;font-size:12px;color:var(--dim);background:rgba(13,16,18,.92);border:1px solid var(--line);border-radius:12px;padding:8px 10px;min-width:180px}
+.steps-mini li{display:flex;gap:8px;align-items:center;padding:3px 0;transition:color .25s}
+.steps-mini li::before{content:"";width:8px;height:8px;border-radius:50%;border:2px solid var(--line2);flex:none;transition:all .25s}
+.steps-mini li.cur{color:var(--hv)} .steps-mini li.cur::before{border-color:var(--hv);animation:blink .7s infinite}
+.steps-mini li.done{color:var(--soft)} .steps-mini li.done::before{background:var(--go);border-color:var(--go)}
+@keyframes blink{50%{opacity:.3}}
+.win{background:#f4f5f2;color:#151a1e;border-radius:16px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.5);min-height:440px;display:grid;grid-template-rows:auto 1fr}
+.win-bar{display:flex;align-items:center;gap:6px;background:#e3e6e1;padding:9px 12px}
+.win-bar i{width:10px;height:10px;border-radius:50%;background:#c9cdc6} .win-bar i:nth-child(1){background:#ff6058} .win-bar i:nth-child(2){background:#ffbd2e} .win-bar i:nth-child(3){background:#28c941}
+.win-bar .url{margin-left:10px;flex:1;background:#fff;border-radius:7px;padding:4px 10px;font:500 11px "JetBrains Mono";color:#6b737a}
+.win-body{display:grid;grid-template-columns:140px 1fr;min-height:0}
+.side{background:#14181c;color:#aeb7be;padding:12px 10px;font-size:12px;display:flex;flex-direction:column;gap:2px}
+.side .brand{color:#fff;font:900 14px Archivo;margin:0 4px 10px}
+.side span{padding:7px 8px;border-radius:8px} .side span.on{background:rgba(255,194,26,.14);color:#ffc21a;font-weight:700}
+.doc{padding:16px 18px;position:relative;overflow:hidden}
+.doc .dh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.doc .dh small{display:block;color:#6b737a;font-size:11px} .doc .dh b{font:900 18px Archivo;letter-spacing:-.01em}
+.doc .meta{font-size:12px;color:#596168;margin-bottom:10px}
+.doc table{width:100%;border-collapse:collapse;font-size:12.5px}
+.doc th{text-align:left;color:#6b737a;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid #d6dad3;padding:6px 4px}
+.doc td{padding:8px 4px;border-bottom:1px solid #e3e6e1;vertical-align:top}
+.doc td:last-child,.doc th:last-child{text-align:right;font-family:"JetBrains Mono"}
+.doc tr.li{opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s} .doc tr.li.on{opacity:1;transform:none}
+.doc tr.li.flash td{background:rgba(255,194,26,.25)} .doc tr.li td{transition:background .9s}
+.doc .src{display:block;font-size:10.5px;color:#8a9298;font-style:italic;margin-top:2px}
+.doc .tot{display:grid;grid-template-columns:1fr auto;gap:2px 16px;margin:10px 0 0 auto;width:220px;font-size:12.5px}
+.doc .tot b{font-family:"JetBrains Mono"} .doc .tot .g{font-weight:800;font-size:14px;border-top:2px solid #151a1e;padding-top:4px}
+.doc .act{display:flex;gap:10px;align-items:center;margin-top:14px}
+.doc .act .btn{padding:9px 16px;font-size:13px}
+.stamp{position:absolute;right:22px;bottom:70px;transform:rotate(-12deg) scale(2);opacity:0;border:3px solid #1e9e57;color:#1e9e57;font:900 20px Archivo;padding:4px 12px;border-radius:8px;letter-spacing:.06em;transition:all .35s cubic-bezier(.3,1.6,.4,1);pointer-events:none}
+.stamp.on{opacity:.9;transform:rotate(-12deg) scale(1)}
+.pipe-note{display:flex;justify-content:space-between;margin-top:12px;color:var(--dim);font-size:12.5px;flex-wrap:wrap;gap:8px}
+.pipe-note button{background:none;border:1px solid var(--line2);color:var(--text);border-radius:999px;padding:5px 12px;font:700 12px Inter;cursor:pointer}
+@media(max-width:1100px){.pipe{grid-template-columns:1fr;gap:24px}.pipe-labels{display:none}.brain{height:auto;flex-direction:row;flex-wrap:wrap;justify-content:center}.flow{display:none}.core{width:80px;height:80px}.core svg{width:44px;height:44px}}
+@media(max-width:600px){.win-body{grid-template-columns:1fr}.side{display:none}.doc .tot{width:100%}.pipe{padding:14px;border-radius:20px}.clock{right:12px}}
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--asphalt);overflow:hidden;white-space:nowrap;padding:13px 0;margin-top:40px}
+.ticker-track{display:inline-flex;gap:56px;animation:tick 55s linear infinite;padding-left:56px}
+.ticker:hover .ticker-track{animation-play-state:paused} @keyframes tick{to{transform:translateX(-50%)}}
+.ticker span{font:500 13.5px "JetBrains Mono";color:var(--soft)} .ticker b{color:var(--hv);font-weight:700} .ticker i{font-style:normal;color:var(--go)}
+section{padding:110px 0;position:relative}
+.sec-head{max-width:820px;margin:0 0 50px}
+.sec-head h2{font-size:clamp(32px,4.6vw,58px);font-weight:900;margin:14px 0 16px}
+.sec-head p{color:var(--soft);font-size:18px;margin:0}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)} .reveal.in{opacity:1;transform:none}
+.split-words .sw{display:inline-block;opacity:0;transform:translateY(.5em);transition:opacity .5s,transform .5s} .split-words.in .sw{opacity:1;transform:none}
+.pains{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.pain{grid-column:span 2;background:linear-gradient(180deg,var(--panel),var(--asphalt));border:1px solid var(--line);border-radius:var(--r);padding:26px;position:relative;overflow:hidden;transition:transform .25s,border-color .25s}
+.pain:hover{transform:translateY(-4px);border-color:var(--line2)}
+.pain.big{grid-column:span 3}
+.pain .n{font:900 64px Archivo;color:transparent;-webkit-text-stroke:1.5px var(--line2);position:absolute;right:18px;top:6px;line-height:1}
+.pain h3{font-size:22px;margin:0 0 10px;max-width:82%} .pain p{color:var(--soft);margin:0;font-size:15px}
+.pain .fact{display:inline-block;margin-top:14px;font:700 12px "JetBrains Mono";color:var(--hv);background:rgba(255,194,26,.08);border:1px solid rgba(255,194,26,.25);border-radius:8px;padding:4px 8px}
+@media(max-width:960px){.pains{grid-template-columns:1fr}.pain,.pain.big{grid-column:auto}}
+.who{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.who .big{font:900 clamp(30px,4vw,52px)/1.08 Archivo;letter-spacing:-.025em;margin:16px 0 0}
+.who .big em{font-style:normal;color:var(--hv)}
+.who ul{list-style:none;padding:0;margin:0} .who li{display:flex;gap:16px;padding:18px 0;border-top:1px solid var(--line);font-size:16.5px;color:var(--soft)}
+.who li b{color:var(--text);display:block;margin-bottom:2px} .who li .ic{flex:none;width:42px;height:42px;border-radius:12px;background:rgba(255,194,26,.1);display:grid;place-items:center;font-size:20px}
+@media(max-width:960px){.who{grid-template-columns:1fr;gap:30px}}
+#process{padding:0}
+.proc{height:480vh;position:relative}
+.proc-pin{position:sticky;top:66px;height:calc(100vh - 66px);display:flex;align-items:center}
+.proc-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:center;width:100%}
+.proc-head h2{font-size:clamp(30px,3.8vw,50px);font-weight:900;margin:14px 0 26px}
+.rail{position:relative;padding-left:26px}
+.rail::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.rail .fill{position:absolute;left:8px;top:6px;width:2px;background:var(--hv);height:0;max-height:calc(100% - 12px)}
+.pstep{position:relative;padding:12px 0 12px 10px;cursor:pointer;opacity:.45;transition:opacity .3s}
+.pstep::before{content:"";position:absolute;left:-23px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--ink);border:2px solid var(--line2);transition:all .3s}
+.pstep.on{opacity:1} .pstep.on::before{background:var(--hv);border-color:var(--hv);box-shadow:0 0 0 6px rgba(255,194,26,.15)}
+.pstep .k{font:700 12px "JetBrains Mono";color:var(--hv);letter-spacing:.12em} .pstep h3{font-size:22px;margin:4px 0 0}
+.pstep p{margin:6px 0 0;color:var(--soft);font-size:15px;max-height:0;overflow:hidden;transition:max-height .45s} .pstep.on p{max-height:140px}
+.proc-view{position:relative;height:min(560px,70vh)}
+.pv{position:absolute;inset:0;opacity:0;transform:translateY(20px) scale(.98);transition:opacity .5s,transform .5s;pointer-events:none}
+.pv.on{opacity:1;transform:none;pointer-events:auto}
+.scroll-hint{margin-top:20px;color:var(--dim);font-size:12.5px;display:flex;gap:8px;align-items:center}
+.scroll-hint .m{width:16px;height:26px;border:2px solid var(--line2);border-radius:10px;position:relative} .scroll-hint .m::after{content:"";position:absolute;left:5px;top:5px;width:2px;height:6px;background:var(--hv);border-radius:2px;animation:sc 1.5s infinite}
+@keyframes sc{60%{transform:translateY(8px);opacity:0}}
+.app{background:var(--asphalt);border:1px solid var(--line2);border-radius:20px;box-shadow:var(--shadow);height:100%;overflow:hidden;display:flex;flex-direction:column}
+.app-h{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);font-size:13px;color:var(--dim)}
+.app-h b{color:var(--text);font-size:14.5px}
+.app-b{padding:16px 18px;flex:1;overflow:hidden;position:relative}
+.pill{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.pill.go{background:rgba(60,207,122,.15);color:var(--go)} .pill.warn{background:rgba(255,122,61,.15);color:var(--warn)} .pill.blue{background:rgba(90,169,255,.15);color:var(--blue)} .pill.hv{background:rgba(255,194,26,.15);color:var(--hv)}
+.msg{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;background:var(--panel)}
+.msg .av{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font:800 12px Inter;flex:none}
+.msg p{margin:2px 0 0;font-size:13.5px;color:var(--soft)} .msg .arrow{margin-left:auto;align-self:center}
+.pv.on .msg{animation:slidein .5s both} .pv.on .msg:nth-child(2){animation-delay:.15s} .pv.on .msg:nth-child(3){animation-delay:.3s} .pv.on .msg:nth-child(4){animation-delay:.45s}
+@keyframes slidein{from{opacity:0;transform:translateX(-14px)}}
+.map{position:absolute;inset:0;background:#10151a}
+.map svg{width:100%;height:100%}
+.road{fill:none;stroke:#2b333b;stroke-width:14;stroke-linecap:round} .road2{fill:none;stroke:#222930;stroke-width:8}
+.route{fill:none;stroke:var(--hv);stroke-width:4;stroke-dasharray:6 8}
+.pv.on .route{animation:dash 1.2s linear infinite} @keyframes dash{to{stroke-dashoffset:-28}}
+.ping{transform-box:fill-box;transform-origin:center} .pv.on .ping{animation:ping 1.6s infinite} @keyframes ping{0%{transform:scale(.6);opacity:1}100%{transform:scale(2.6);opacity:0}}
+.truck-move{transition:transform 2.4s cubic-bezier(.5,0,.2,1)}
+.map-card{position:absolute;left:16px;bottom:16px;right:16px;background:rgba(20,24,28,.95);border:1px solid var(--line2);border-radius:14px;padding:12px 14px;font-size:13px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.tq{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;height:100%}
+.wheel{width:100%;max-width:260px;margin:0 auto}
+.stud{fill:#3a434c;stroke:#556069;stroke-width:2;transition:fill .3s}
+.stud.on{fill:var(--hv);stroke:#fff6d0}
+.stud-n{font:700 10px "JetBrains Mono";fill:#0d1012;text-anchor:middle;dominant-baseline:central}
+.gauge{font:900 46px Archivo;color:var(--hv)} .gauge small{font:600 14px Inter;color:var(--dim);margin-left:4px}
+.tq-log{font-size:13px;color:var(--soft)} .tq-log div{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.inv{width:100%;border-collapse:collapse} .inv td,.inv th{padding:9px 4px;border-bottom:1px solid var(--line);font-size:13.5px} .inv th{color:var(--dim);font-weight:600;font-size:11.5px;text-align:left} .inv td:last-child{text-align:right;font-family:"JetBrains Mono"}
+.attach{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px} .attach>span{font-size:12.5px;border:1px solid var(--line2);border-radius:8px;padding:5px 9px;color:var(--soft)}
+.inv-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.inv tr.t td{border:0;font-weight:800;font-size:15px;padding-top:12px}
+.prov{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 8px} .prov button{background:var(--panel);border:1px solid var(--line2);color:var(--soft);border-radius:8px;padding:5px 9px;font:700 12px "JetBrains Mono";cursor:pointer} .prov button.on{background:var(--hv);color:var(--hv-ink);border-color:var(--hv)}
+@media(max-width:960px){.proc{height:auto}.proc-pin{position:static;height:auto;display:block;padding:80px 0}.proc-grid{grid-template-columns:1fr}.proc-view{height:580px}.scroll-hint{display:none}.tq{grid-template-columns:1fr}}
+.values{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.val{border:1px solid var(--line);border-radius:var(--r);padding:26px;background:linear-gradient(180deg,var(--panel),transparent)}
+.val .pre{font:700 11px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.val .v{font:900 clamp(44px,5vw,64px) Archivo;color:var(--hv);letter-spacing:-.03em;line-height:1;margin:8px 0 10px}
+.val .v small{font-size:.45em;color:var(--soft);margin-left:4px}
+.val h4{font-size:17px;margin-bottom:6px} .val p{color:var(--soft);font-size:14.5px;margin:0}
+.note{margin-top:16px;color:var(--dim);font-size:13px}
+@media(max-width:960px){.values{grid-template-columns:1fr 1fr}} @media(max-width:560px){.values{grid-template-columns:1fr}}
+.day{display:grid;grid-template-columns:290px 1fr;gap:24px;align-items:start}
+.day-tabs{display:flex;flex-direction:column;gap:6px}
+.day-tabs button{position:relative;overflow:hidden;text-align:left;background:var(--asphalt);border:1px solid var(--line);color:var(--soft);border-radius:14px;padding:14px 16px;cursor:pointer;font:600 15px Inter;display:flex;gap:12px;align-items:center}
+.day-tabs button .no{font:700 12px "JetBrains Mono";color:var(--dim)} .day-tabs button .ck{margin-left:auto;color:var(--go);opacity:0}
+.day-tabs button.done .ck{opacity:1} .day-tabs button.on{border-color:var(--hv);color:var(--text);background:rgba(255,194,26,.06)} .day-tabs button.on .no{color:var(--hv)}
+.day-tabs button .pg{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--hv)} .day-tabs button.on .pg{animation:pg var(--d,5s) linear forwards} @keyframes pg{to{width:100%}}
+.appwin{background:#f4f5f2;color:#151a1e;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);min-height:520px;display:grid;grid-template-rows:auto 1fr}
+.appwin .win-body{grid-template-columns:160px 1fr}
+.dpane{display:none;padding:20px 22px} .dpane.on{display:block;animation:fadeup .4s}
+@keyframes fadeup{from{opacity:0;transform:translateY(10px)}}
+.dpane h4{font:900 20px Archivo;margin-bottom:4px} .dpane .sub{color:#6b737a;font-size:13px;margin-bottom:14px}
+.card-l{border:1px solid #dfe3dc;border-radius:14px;padding:12px 14px;margin-bottom:10px;background:#fff;font-size:13.5px}
+.card-l .row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed #e3e6e1} .card-l .row:last-child{border:0}
+.card-l .row span:first-child{color:#6b737a}
+.dpane.on .card-l .row{animation:fadeup .4s both} .dpane.on .row:nth-child(2){animation-delay:.1s} .dpane.on .row:nth-child(3){animation-delay:.2s} .dpane.on .row:nth-child(4){animation-delay:.3s}
+.srcs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px} .srcs span{font:700 10.5px Inter;border-radius:6px;padding:2px 7px;background:#eef0ec;color:#5b636a}
+.live-trans{background:#151a1e;color:#e7ecef;border-radius:14px;padding:14px;font-size:14px;line-height:1.6;min-height:110px;margin-bottom:12px}
+.live-trans .k{color:#ffc21a;font-weight:700}
+.extract{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.extract div{border:1px solid #dfe3dc;background:#fff;border-radius:12px;padding:10px 12px;font-size:13px;opacity:0;transform:scale(.95);transition:all .35s}
+.extract div.on{opacity:1;transform:none} .extract small{display:block;color:#7a8288;font-size:11px} .extract b{font-family:"JetBrains Mono"}
+@media(max-width:960px){.day{grid-template-columns:1fr}.day-tabs{flex-direction:row;overflow-x:auto}.day-tabs button{flex:0 0 auto}.appwin .win-body{grid-template-columns:1fr}.appwin .side{display:none}}
+.promo{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.promo .ph{height:560px;width:290px;transform:rotate(-4deg);transition:transform .6s} .promo .ph:hover{transform:rotate(0)}
+.plan{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:13px;opacity:0;transform:translateX(20px);transition:all .5s}
+.plan.on{opacity:1;transform:none} .plan.road{border-left-color:var(--warn)} .plan small{display:block;color:var(--dim);margin-top:2px}
+.bigrec{margin:auto auto 6px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,#ff8a4f,#d9531e);display:grid;place-items:center;font:800 14px Inter;color:#fff;animation:ring 2s infinite}
+.feat{list-style:none;padding:0;margin:24px 0 0} .feat li{display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--line);color:var(--soft)} .feat li b{color:var(--text);display:block}
+.feat .ic{flex:none;width:40px;height:40px;border-radius:12px;background:rgba(90,169,255,.12);display:grid;place-items:center;font-size:18px}
+@media(max-width:960px){.promo{grid-template-columns:1fr}.promo .ph{transform:none}}
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:70px}
+.trust>div{border:1px solid var(--line);border-radius:var(--r);padding:26px;background:var(--panel)}
+.trust .ic{font-size:26px} .trust h3{font-size:20px;margin:12px 0 8px} .trust p{color:var(--soft);margin:0;font-size:15px}
+.trust .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px} .trust .tags span{font:700 11px Inter;border:1px solid var(--line2);border-radius:999px;padding:3px 9px;color:var(--soft)}
+@media(max-width:960px){.trust{grid-template-columns:1fr}}
+details{border-bottom:1px solid var(--line);padding:18px 0} summary{cursor:pointer;font:600 18px Inter;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";color:var(--hv);font-size:24px;line-height:1;transition:transform .3s} details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--soft);margin:10px 0 0;max-width:860px}
+.founder{display:grid;grid-template-columns:300px 1fr;gap:50px;align-items:center;background:linear-gradient(135deg,var(--panel),var(--asphalt));border:1px solid var(--line);border-radius:28px;padding:40px}
+.founder img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:20px}
+.founder .q{font:800 clamp(22px,2.6vw,32px)/1.25 Archivo;letter-spacing:-.015em;margin:16px 0 20px}
+.founder .q::before{content:"“";color:var(--hv)} .founder .q::after{content:"”";color:var(--hv)}
+.creds{display:flex;gap:10px;flex-wrap:wrap} .creds span{font:600 12.5px Inter;border:1px solid var(--line2);border-radius:999px;padding:6px 12px;color:var(--soft)}
+@media(max-width:860px){.founder{grid-template-columns:1fr;padding:24px}.founder img{max-width:260px}}
+.pilot{display:grid;grid-template-columns:.9fr 1.1fr;gap:50px;align-items:start}
+.seats{display:flex;gap:6px;margin:22px 0 8px;flex-wrap:wrap} .seats i{width:28px;height:36px;border-radius:7px;background:var(--panel2);border:1px solid var(--line2);transition:all .4s} .seats i.lit{background:rgba(255,194,26,.2);border-color:var(--hv)}
+.perks{list-style:none;padding:0;margin:20px 0 0} .perks li{padding:12px 0;border-top:1px solid var(--line);color:var(--soft)} .perks li::before{content:"✓ ";color:var(--go);font-weight:800}
+form.apply{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:26px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+form.apply label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--dim);font-weight:600}
 form.apply .full{grid-column:1/-1}
-form.apply input,form.apply select,form.apply textarea{background:var(--ink);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px 12px;font:15px Inter}
+form.apply input,form.apply select,form.apply textarea{background:var(--ink);border:1px solid var(--line2);color:var(--text);border-radius:12px;padding:12px;font:15px Inter;transition:border-color .2s}
 form.apply input:focus,form.apply select:focus,form.apply textarea:focus{outline:none;border-color:var(--hv)}
-form.apply .consent{flex-direction:row;align-items:flex-start;gap:10px;color:#c7cfd5;font-size:13px}
-form.apply .consent input{margin-top:3px}
+form.apply .consent{flex-direction:row;align-items:flex-start;gap:10px;color:var(--soft);font-weight:500}
+form.apply .consent input{margin-top:3px} form.apply a{color:var(--hv)}
 .formmsg{grid-column:1/-1;font-size:14px;min-height:20px}
-@media(max-width:900px){.pilot{grid-template-columns:1fr}form.apply{grid-template-columns:1fr}}
-
-/* faq */
-details{border-bottom:1px solid var(--line);padding:16px 0} summary{cursor:pointer;font:600 17px Inter;list-style:none;display:flex;justify-content:space-between;gap:16px}
-summary::after{content:"+";color:var(--hv);font-size:22px;line-height:1} details[open] summary::after{content:"–"}
-details p{color:#c7cfd5;margin:10px 0 0;max-width:820px}
-footer{border-top:1px solid var(--line);padding:40px 0;color:var(--dim);font-size:14px}
-footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-footer a{color:var(--dim);margin-right:16px}
-.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s} .reveal.in{opacity:1;transform:none}
-
-/* ===== motion additions ===== */
-.wheel-bg{position:absolute;right:-120px;top:40px;width:520px;height:520px;opacity:.07;animation:spin 40s linear infinite;pointer-events:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--asphalt);overflow:hidden;white-space:nowrap;padding:12px 0}
-.ticker-track{display:inline-flex;gap:48px;animation:tick 45s linear infinite;padding-left:48px}
-.ticker:hover .ticker-track{animation-play-state:paused}
-@keyframes tick{to{transform:translateX(-50%)}}
-.ticker span{font:500 13.5px "JetBrains Mono",monospace;color:#c7cfd5}
-.ticker b{color:var(--hv);font-weight:600} .ticker i{font-style:normal;color:var(--go)}
-.steps .step{position:relative;transition:background .4s}
-.steps .step.active{background:linear-gradient(180deg,rgba(255,194,26,.10),var(--asphalt))}
-.steps .step .prog{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--hv)}
-.steps .step.active .prog{animation:prog var(--dur,3.6s) linear forwards}
-@keyframes prog{to{width:100%}}
-.steps-nav{display:flex;gap:10px;margin-top:12px;align-items:center;color:var(--dim);font-size:13px}
-.steps-nav button{background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:6px 14px;font:600 13px Inter;cursor:pointer}
-/* job record timeline */
-.record{display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:start}
-.stages{list-style:none;margin:0;padding:0;position:relative}
-.stages::before{content:"";position:absolute;left:15px;top:16px;bottom:16px;width:2px;background:var(--line)}
-.stages li{position:relative;display:flex;gap:14px;align-items:center;padding:10px 0;color:var(--dim);font-weight:600;transition:color .3s}
-.stages li .ck{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:var(--ink);display:grid;place-items:center;font:700 12px "JetBrains Mono";z-index:1;transition:all .35s}
-.stages li.done{color:var(--text)} .stages li.done .ck{background:var(--go);border-color:var(--go);color:#062b14}
-.stages li.cur{color:var(--hv)} .stages li.cur .ck{border-color:var(--hv);color:var(--hv);box-shadow:0 0 0 6px rgba(255,194,26,.12)}
-.jobfile{background:var(--asphalt);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-height:380px}
-.jobfile .jh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.jobfile .rows>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);opacity:0;transform:translateX(-10px);transition:opacity .4s,transform .4s;font-size:14.5px}
-.jobfile .rows>div.on{opacity:1;transform:none}
-.jobfile .rows span:first-child{color:var(--dim)} .jobfile .rows b{font-family:"JetBrains Mono";font-weight:500}
-@media(max-width:900px){.record{grid-template-columns:1fr}}
-/* technician phone */
-.field{display:grid;grid-template-columns:1fr 340px;gap:40px;align-items:center}
-.phone{width:300px;margin:0 auto;border:10px solid #050607;border-radius:40px;background:var(--ink);box-shadow:var(--shadow);padding:16px 14px 20px;position:relative;min-height:560px}
-.phone::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:90px;height:20px;border-radius:12px;background:#050607}
-.phone .ph{display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin:14px 4px 10px}
-.phone h5{margin:4px 4px 10px;font:700 18px Archivo}
-.plan-item{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-size:13px;opacity:0;transform:translateY(12px);transition:all .45s}
-.plan-item.on{opacity:1;transform:none}
-.plan-item.road{border-left-color:var(--warn)} .plan-item small{display:block;color:var(--dim);margin-top:2px}
-.recbtn{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px auto 0;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,#ff7a3d,#d9531e);color:#fff;font:700 13px Inter;border:0;box-shadow:0 0 0 0 rgba(255,122,61,.5);animation:ring 2s infinite}
-@keyframes ring{70%{box-shadow:0 0 0 22px rgba(255,122,61,0)}100%{box-shadow:0 0 0 0 rgba(255,122,61,0)}}
-.field ul{list-style:none;padding:0;margin:18px 0 0} .field li{padding:12px 0;border-top:1px solid var(--line);color:#d2d9de} .field li b{color:var(--text)}
-@media(max-width:900px){.field{grid-template-columns:1fr}}
-/* tour animation hooks */
-.pane.on .bar i{animation:grow 1.1s ease-out both} @keyframes grow{from{width:0!important}}
-.pane.on .job.r{animation:drop .7s cubic-bezier(.2,1.4,.4,1) .5s both} @keyframes drop{from{opacity:0;transform:translateY(-14px) scale(.9)}}
-.pane.on .tbl tr{animation:rowin .4s both} .pane.on .tbl tr:nth-child(2){animation-delay:.1s} .pane.on .tbl tr:nth-child(3){animation-delay:.2s} .pane.on .tbl tr:nth-child(4){animation-delay:.3s}
-@keyframes rowin{from{opacity:0;transform:translateX(-8px)}}
-.pain{transition:transform .2s,border-color .2s} .pain:hover{transform:translateY(-3px);border-color:#3f4850}
-
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+@media(max-width:960px){.pilot{grid-template-columns:1fr}form.apply{grid-template-columns:1fr}}
+footer{border-top:1px solid var(--line);padding:44px 0;color:var(--dim);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap} footer a{color:var(--dim);margin-right:16px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.reveal,.split-words .sw{opacity:1;transform:none}}
 </style>
 </head>
 <body>
+<div class="tread-bg" aria-hidden="true"></div>
 <div class="tape"></div>
 <nav class="top"><div class="wrap">
-  <a class="logo" href="#"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#ffc21a" stroke-width="4"/><circle cx="16" cy="16" r="5" fill="#ffc21a"/><g stroke="#ffc21a" stroke-width="2"><path d="M16 2v5M16 25v5M2 16h5M25 16h5"/></g></svg><span class="brand">TreadFleet</span></a>
-  <div class="navlinks" id="navlinks">
-    <a href="#how" data-i="navHow">How it works</a><a href="#record" data-i="navRecord">On the job</a><a href="#product" data-i="navProduct">Product</a><a href="#crews" data-i="navCrews">For crews</a><a href="#trust" data-i="navTrust">Trust</a><a href="#faq" data-i="navFaq">FAQ</a>
-  </div>
+  <a class="logo" href="#hero"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="#ffc21a" stroke-width="5" stroke-dasharray="5 2.4"/><circle cx="16" cy="16" r="4.5" fill="#ffc21a"/></svg>TreadFleet</a>
+  <div class="navlinks" id="navlinks"><a href="#who" data-i="nav1">What it is</a><a href="#value" data-i="nav2">What you gain</a><a href="#day" data-i="nav3">On the job</a><a href="#founder" data-i="nav4">Founder</a><a href="#faq" data-i="nav5">FAQ</a></div>
   <div class="lang" role="group" aria-label="Language"><button data-lang="en" class="on">EN</button><button data-lang="fr">FR</button></div>
-  <a class="btn btn-hv" href="#pilot" data-i="ctaApply">Apply for the pilot</a>
+  <a class="btn btn-hv" href="#pilot" data-i="cta">Apply for the pilot</a>
   <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
 </div></nav>
 
-<header class="hero"><svg class="wheel-bg" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="92" fill="none" stroke="#ffc21a" stroke-width="16" stroke-dasharray="10 6"/><circle cx="100" cy="100" r="58" fill="none" stroke="#ffc21a" stroke-width="6"/><g fill="#ffc21a"><circle cx="100" cy="62" r="7"/><circle cx="136" cy="88" r="7"/><circle cx="122" cy="130" r="7"/><circle cx="78" cy="130" r="7"/><circle cx="64" cy="88" r="7"/></g><circle cx="100" cy="100" r="16" fill="#ffc21a"/></svg><div class="wrap hero-grid">
-  <div>
-    <span class="eyebrow" data-i="heroEyebrow">For commercial tire crews in Canada</span>
-    <h1 data-i="heroH1" data-html>Talk at the truck. The paperwork is <em>done</em> before you're back in the cab.</h1>
-    <p class="lead" data-i="heroLead">Speak one note at the unit. Your work order, torque log, stock update and fleet invoice are ready for your approval. Built for technicians who serve trucking fleets, solo or with a crew of fifteen.</p>
-    <div class="ctas"><a class="btn btn-hv" href="#pilot" data-i="ctaApply">Apply for the pilot</a><a class="btn btn-ghost" href="#how" data-i="ctaHow">See how it works</a></div>
-    <div class="proof"><span data-i="proof1">You approve everything</span><span data-i="proof2">English and French</span><span data-i="proof3">Voice first, gloves on</span></div>
+<header class="hero" id="hero"><div class="wrap">
+  <div class="hero-top">
+    <div><span class="eyebrow" data-i="heroEyebrow">For commercial tire crews in Canada</span>
+      <h1 class="split" data-i="heroH1" data-html>The truck is fixed. <span class="hl">So is the paperwork.</span></h1></div>
+    <div><p class="lead" data-i="heroLead">TreadFleet is the digital dispatcher for tire crews that serve trucking fleets. Your tech talks at the truck; the work order, torque log, stock update and invoice are ready before they're back in the cab. You approve, it goes out.</p>
+      <div class="ctas"><a class="btn btn-hv" href="#pilot"><span data-i="cta">Apply for the pilot</span> <span class="arr">→</span></a><a class="btn btn-ghost" href="#process" data-i="ctaHow">See how it works</a></div>
+      <div class="chips"><span data-i="chip1">You approve everything</span><span data-i="chip2">English and French</span><span data-i="chip3">Voice first, gloves on</span></div></div>
   </div>
+  <div class="pipe-labels"><span data-i="laneA">At the truck</span><span>TreadFleet</span><span data-i="laneC">In the office</span></div>
+  <div class="pipe reveal" id="pipe">
+    <div class="clock mono"><span id="clk">Tue 09:41</span><span class="saved" id="saved"></span></div>
+    <div class="ph"><div class="ph-in">
+      <div class="ph-job"><span class="tag" data-i="phTag">ROAD CALL</span><b>Northline · Unit 4521</b><span style="color:var(--dim)">Hwy 401 · km 362</span></div>
+      <div class="ph-trans" id="phTrans"></div>
+      <div class="ph-photos"><i></i><i></i><i></i></div>
+      <div class="ph-rec" id="phRec"><span class="recdot"></span><div class="wave" id="wave"></div><span class="t" id="recT">0:00</span></div>
+    </div></div>
+    <div class="brain" id="brain"><div class="flow"><i></i><i></i><i></i></div>
+      <div class="core"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="#ffc21a" stroke-width="5" stroke-dasharray="6 3"/><circle cx="20" cy="20" r="6" fill="#ffc21a"/></svg></div>
+      <ol class="steps-mini" id="mini"><li data-i="m1">Listening…</li><li data-i="m2">Positions and tread</li><li data-i="m3">Prices from your list</li><li data-i="m4">Torque and stock</li><li data-i="m5">Invoice drafted</li></ol></div>
+    <div class="win"><div class="win-bar"><i></i><i></i><i></i><span class="url">app.treadfleet.ca/jobs/1187</span></div>
+      <div class="win-body">
+        <div class="side"><div class="brand">◉ TreadFleet</div><span data-i="sd1">Today</span><span data-i="sd2">Dispatch</span><span class="on" data-i="sd3">Jobs</span><span data-i="sd4">Fleets</span><span data-i="sd5">Stock</span><span data-i="sd6">Invoices</span></div>
+        <div class="doc">
+          <div class="dh"><div><small data-i="docType">Invoice draft · from voice note</small><b>INV-1187</b></div><span class="pill hv" id="docState">Preparing</span></div>
+          <div class="meta">Northline Freight · PO 77812 · Unit 4521 · <span data-i="docPos">Steer left</span></div>
+          <table><tr><th data-i="thItem">Item</th><th data-i="thQty">Qty</th><th>CAD</th></tr>
+            <tr class="li"><td>11R22.5 16-ply<span class="src" data-i="src1">“put on a new 11R22.5”</span></td><td>1</td><td>612.00</td></tr>
+            <tr class="li"><td><span data-i="itRoad">Road call + labour</span><span class="src" data-i="src2">“road call, hour and a half”</span></td><td>1.5 h</td><td>285.00</td></tr>
+            <tr class="li"><td><span data-i="itTorque">Torque + re-torque reminder</span><span class="src" data-i="src3">“torqued to 450”</span></td><td>1</td><td>0.00</td></tr>
+            <tr class="li"><td><span data-i="itCasing">Casing credit</span><span class="src" data-i="src4">“casing looks good”</span></td><td>1</td><td>−40.00</td></tr></table>
+          <div class="tot"><span data-i="sub">Subtotal</span><b id="tSub">0.00</b><span>HST 13% (ON)</span><b id="tTax">0.00</b><span class="g">Total</span><b class="g" id="tTot">0.00</b></div>
+          <div class="act"><button class="btn btn-hv" id="approve" data-i="approve">Approve and send</button><span id="sentTxt" style="color:#1e9e57;font-weight:700;font-size:13px"></span></div>
+          <div class="stamp" id="stamp" data-i="stamp">APPROVED</div>
+        </div></div></div>
+  </div>
+  <div class="pipe-note"><span data-i="pipeNote">Illustrative example. Names and prices are made up. Prices always come from your own list.</span><button id="pipeToggle">Pause</button></div>
+</div>
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+</header>
 
-  <div class="demo reveal" aria-label="Product demo">
-    <div class="demo-bar"><b data-i="demoTitle">Road call · Unit 4521</b><span class="mono">Highway 401, km 362</span>
-      <div class="demo-steps" id="dsteps"><button aria-label="Step 1" class="on"></button><button aria-label="Step 2"></button><button aria-label="Step 3"></button><button aria-label="Step 4"></button></div></div>
-    <div class="demo-body">
-      <div class="stage on" data-s="0">
-        <h4 data-i="s0h">1 · The technician speaks</h4>
-        <div class="memo"><div class="rec"><span class="dot"></span><span data-i="recording">Recording</span><div class="wave"><i style="animation-delay:-.1s"></i><i style="animation-delay:-.3s"></i><i style="animation-delay:-.5s"></i><i style="animation-delay:-.2s"></i><i style="animation-delay:-.6s"></i><i style="animation-delay:-.4s"></i><i style="animation-delay:-.7s"></i></div></div>
-          <div class="transcript" id="transcript"></div></div>
-      </div>
-      <div class="stage" data-s="1">
-        <h4 data-i="s1h">2 · It understands the job</h4>
-        <div class="card truck">
-          <div>
-            <div class="chips" id="chips"></div>
-          </div>
-          <div class="axle" aria-hidden="true"><div class="tire hit">SL</div><div class="tire">SR</div><div class="tire">DL</div><div class="tire">DR</div></div>
-        </div>
-      </div>
-      <div class="stage" data-s="2">
-        <h4 data-i="s2h">3 · Work order and torque log, filled in</h4>
-        <div class="card">
-          <div class="wo-head"><div><div class="id">WO-2026-1187</div><div style="font-weight:600;margin-top:3px">Northline Freight · Unit 4521</div></div><span class="pill blue" data-i="roadcall">Road call</span></div>
-          <table class="mini">
-            <tr><td data-i="woPos">Position</td><td>Steer · Left</td></tr>
-            <tr><td data-i="woRemoved">Removed</td><td>6/32 · casing OK</td></tr>
-            <tr><td data-i="woInstalled">Installed</td><td>11R22.5 · 16 ply</td></tr>
-            <tr><td data-i="woTorque">Torque</td><td>450 ft-lb ✓</td></tr>
-            <tr><td data-i="woRetorque">Re-torque reminder</td><td data-i="woRetorqueV">after 80 km</td></tr>
-            <tr><td data-i="woStock">Truck stock</td><td>11R22.5: 3 → 2</td></tr>
-          </table>
-        </div>
-      </div>
-      <div class="stage" data-s="3">
-        <h4 data-i="s3h">4 · Invoice ready for your approval</h4>
-        <div class="card">
-          <div class="wo-head"><div><div class="id">INV-1187</div><div style="font-weight:600;margin-top:3px">Northline Freight · PO 77812</div></div><span class="pill warn" data-i="draft">Draft</span></div>
-          <table class="mini">
-            <tr><td>11R22.5 steer tire</td><td>$612.00</td></tr>
-            <tr><td data-i="liRoad">Road call + labour (1.5 h)</td><td>$285.00</td></tr>
-            <tr><td data-i="liCasing">Casing credit</td><td>−$40.00</td></tr>
-            <tr><td>HST 13% (ON)</td><td>$111.41</td></tr>
-            <tr class="tot"><td>Total</td><td>$968.41</td></tr>
-          </table>
-          <div class="approve"><button class="btn btn-hv" id="approveBtn" data-i="approve">Approve and send</button><span class="sent" id="sentMsg" data-i="sent">Sent to Northline Freight ✓</span></div>
-        </div>
-      </div>
+<section id="pain"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow reveal" data-i="pEyebrow">Why you're still at the desk at 9 pm</span><h2 class="split" data-i="pH2">The tools are put away. The paperwork isn't.</h2><p class="reveal" data-i="pLead">Commercial techs are the hardest people in the shop to hire. Their hours should go to trucks, not typing. These are the seven things that eat them.</p></div>
+  <div class="pains">
+    <div class="pain big reveal"><span class="n">01</span><h3 data-i="p1h">Work orders scattered across clipboards and phones</h3><p data-i="p1">Unit numbers, positions and tread depths live on paper, in a text, in someone's head. What isn't written down never gets billed.</p><span class="fact" data-i="p1f">One Toronto-area shop estimated $20–30k a year lost to missing paperwork</span></div>
+    <div class="pain big reveal"><span class="n">02</span><h3 data-i="p2h">Torque records you can't prove</h3><p data-i="p2">When a wheel comes off, the first question is: where's the torque record? In Ontario a wheel separation is an absolute-liability offence.</p><span class="fact" data-i="p2f">Fines $2,000–$50,000 (Ontario)</span></div>
+    <div class="pain reveal"><span class="n">03</span><h3 data-i="p3h">Road calls blow up the plan</h3><p data-i="p3">A blowout on the 401 pulls a tech off the yard check, and the day gets rearranged by phone.</p></div>
+    <div class="pain reveal"><span class="n">04</span><h3 data-i="p4h">Invoices bounce back</h3><p data-i="p4">Wrong unit number, missing PO. Every rejected invoice restarts the clock on a slow payer.</p></div>
+    <div class="pain reveal"><span class="n">05</span><h3 data-i="p5h">Stock nobody can see</h3><p data-i="p5">Which sizes are on which truck? Casings at the retreader? You find out when the tire isn't there.</p></div>
+    <div class="pain big reveal"><span class="n">06</span><h3 data-i="p6h">Another tool that doesn't talk to the others</h3><p data-i="p6">Setup, training, five apps that don't connect. You learned the trade, not IT.</p></div>
+    <div class="pain big reveal"><span class="n">07</span><h3 data-i="p7h">Software built for car shops</h3><p data-i="p7">Bays, cars and a customer at the counter, not a unit number, a fleet PO and the shoulder of the highway.</p></div>
+  </div>
+</div></section>
+
+<section id="who"><div class="wrap who">
+  <div><span class="eyebrow reveal" data-i="wEyebrow">What TreadFleet is</span><p class="big split" data-i="wBig" data-html>Not another app to feed. A <em>digital dispatcher</em> that does the office work around every job.</p></div>
+  <ul class="reveal">
+    <li><span class="ic">🎙</span><div data-i="w1" data-html><b>It listens like an experienced service writer.</b> Your techs talk; it picks out units, positions, 32nds, parts and torque.</div></li>
+    <li><span class="ic">🧾</span><div data-i="w2" data-html><b>It prepares, you decide.</b> Work orders, invoices and schedules wait for your one-tap approval.</div></li>
+    <li><span class="ic">🧠</span><div data-i="w3" data-html><b>It learns your shop.</b> Your prices, brands, each fleet's PO rules. Every correction sharpens the next draft.</div></li>
+  </ul>
+</div></section>
+
+<section id="process"><div class="proc" id="proc"><div class="proc-pin"><div class="wrap proc-grid">
+  <div class="proc-head"><span class="eyebrow" data-i="prEyebrow">From the call to the paid invoice</span><h2 data-i="prH2">Four jobs it takes off your desk</h2>
+    <div class="rail"><span class="fill" id="railFill"></span>
+      <div class="pstep on"><span class="k">01 · <span data-i="ps1k">INTAKE</span></span><h3 data-i="ps1h">Requests sorted, jobs created</h3><p data-i="ps1">Calls, texts, emails and WhatsApp from fleets land in one inbox. Each becomes a job with the right fleet, unit and PO.</p></div>
+      <div class="pstep"><span class="k">02 · <span data-i="ps2k">DISPATCH</span></span><h3 data-i="ps2h">The right tech, the right tire</h3><p data-i="ps2">Road calls slot in around yard checks: closest tech, right skills, the size on the truck. You confirm with one click.</p></div>
+      <div class="pstep"><span class="k">03 · <span data-i="ps3k">RECORD</span></span><h3 data-i="ps3h">Every wheel on record</h3><p data-i="ps3">Torque value, pattern, time and tech for every wheel, with re-torque reminders sent on their own.</p></div>
+      <div class="pstep"><span class="k">04 · <span data-i="ps4k">BILL</span></span><h3 data-i="ps4h">Invoiced before you're home</h3><p data-i="ps4">Quote versus work done, extras flagged, provincial tax applied, PO on every line. Approve and it's sent.</p></div>
     </div>
-    <div class="demo-foot"><span data-i="demoNote">Illustrative example. Names and prices are made up.</span><button id="demoToggle" data-i="pause">Pause</button></div>
+    <div class="scroll-hint"><span class="m"></span><span data-i="scrollHint">Keep scrolling</span></div>
   </div>
-</div></header>
-<div class="ticker" aria-hidden="true"><div class="ticker-track"><span><b>Unit 118</b> · torque logged 450 ft-lb <i>✓</i></span><span><b>Northline Freight</b> · invoice approved · PO 77812 <i>✓</i></span><span><b>Road call · 401 km 362</b> · Priya dispatched · ETA 34 min <i></i></span><span><b>Prairie Haul</b> · 6 tires due in 30 days <i></i></span><span><b>Unit 4521</b> · re-torque reminder sent <i>✓</i></span><span><b>Casing 11R22.5</b> · credit received from retreader <i>✓</i></span><span><b>Westbound Logistics</b> · yard check booked Thu 7:00 <i></i></span><span><b>Truck 3 stock</b> · 11R22.5 below 2 · reorder suggested <i></i></span><span><b>Unit 118</b> · torque logged 450 ft-lb <i>✓</i></span><span><b>Northline Freight</b> · invoice approved · PO 77812 <i>✓</i></span><span><b>Road call · 401 km 362</b> · Priya dispatched · ETA 34 min <i></i></span><span><b>Prairie Haul</b> · 6 tires due in 30 days <i></i></span><span><b>Unit 4521</b> · re-torque reminder sent <i>✓</i></span><span><b>Casing 11R22.5</b> · credit received from retreader <i>✓</i></span><span><b>Westbound Logistics</b> · yard check booked Thu 7:00 <i></i></span><span><b>Truck 3 stock</b> · 11R22.5 below 2 · reorder suggested <i></i></span></div></div>
+  <div class="proc-view">
+    <div class="pv on"><div class="app"><div class="app-h"><b data-i="inbox">Inbox</b><span class="pill hv" data-i="newReq">4 new requests</span></div><div class="app-b">
+      <div class="msg"><span class="av" style="background:rgba(90,169,255,.18);color:var(--blue)">SMS</span><div><b>Northline Freight</b><p data-i="mg1">“4521 steer blew out on the 401 eastbound near km 362”</p></div><span class="pill warn arrow" data-i="mgA1">Road call</span></div>
+      <div class="msg"><span class="av" style="background:rgba(60,207,122,.18);color:var(--go)">WA</span><div><b>Prairie Haul</b><p data-i="mg2">“Can you do the yard Thursday? 12 units, usual check”</p></div><span class="pill blue arrow" data-i="mgA2">Yard check</span></div>
+      <div class="msg"><span class="av" style="background:rgba(255,194,26,.18);color:var(--hv)">@</span><div><b>Westbound Logistics</b><p data-i="mg3">“PO WB-505 for the drives on unit 77”</p></div><span class="pill go arrow" data-i="mgA3">PO matched</span></div>
+      <div class="msg"><span class="av" style="background:rgba(255,122,61,.18);color:var(--warn)">☎</span><div><b data-i="mgVm">Voicemail</b><p data-i="mg4">“Trailer 2 on unit 118 losing air, call back”</p></div><span class="pill hv arrow" data-i="mgA4">Job created</span></div>
+    </div></div></div>
+    <div class="pv"><div class="app"><div class="app-h"><b data-i="dispatch">Dispatch · live</b><span class="pill warn" data-i="newRoad">New road call</span></div><div class="app-b" style="padding:0"><div class="map">
+      <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path class="road" d="M-20 300 C150 280 260 320 380 260 S560 160 640 170"/><path class="road2" d="M120 -20 L180 480"/><path class="road2" d="M420 -20 C400 120 470 300 430 480"/>
+        <path class="route" d="M181 114 L165 290 C230 300 300 300 360 270"/>
+        <circle class="ping" cx="360" cy="270" r="10" fill="#ff7a3d"/><circle cx="360" cy="270" r="7" fill="#ff7a3d"/>
+        <g class="truck-move" id="t3"><rect x="166" y="104" width="30" height="20" rx="5" fill="#ffc21a"/><text x="181" y="118" font-size="11" font-weight="700" text-anchor="middle" fill="#1a1400">T3</text></g>
+        <g opacity=".55"><rect x="455" y="60" width="30" height="20" rx="5" fill="#5aa9ff"/><text x="470" y="74" font-size="11" font-weight="700" text-anchor="middle" fill="#04121f">T1</text></g>
+        <g opacity=".55"><rect x="60" y="380" width="30" height="20" rx="5" fill="#5aa9ff"/><text x="75" y="394" font-size="11" font-weight="700" text-anchor="middle" fill="#04121f">T2</text></g>
+        <text x="372" y="256" font-size="12" fill="#ff9a66" font-weight="700">401 · km 362</text>
+      </svg>
+      <div class="map-card"><div><b data-i="mapT">Priya · Truck 3</b><div style="color:var(--dim)" data-i="mapS">11R22.5 on board · 34 min away</div></div><span class="btn btn-hv" style="padding:8px 14px;font-size:13px" data-i="confirm">Confirm</span></div>
+    </div></div></div></div>
+    <div class="pv"><div class="app"><div class="app-h"><b data-i="torqueT">Torque record · Unit 4521 · Steer L</b><span class="pill go" id="tqState">0 / 10</span></div><div class="app-b">
+      <div class="tq"><svg class="wheel" viewBox="0 0 220 220" aria-hidden="true" id="wheel"><circle cx="110" cy="110" r="104" fill="#1b2026" stroke="#39424c" stroke-width="6"/><circle cx="110" cy="110" r="70" fill="#14181c" stroke="#2b323a" stroke-width="3"/><circle cx="110" cy="110" r="24" fill="#2b323a"/></svg>
+        <div><div class="gauge"><span id="gauge">0</span><small>ft-lb</small></div><div style="color:var(--dim);font-size:13px;margin:4px 0 14px" data-i="pattern">Crisscross pattern · spec 450 ft-lb</div>
+          <div class="tq-log"><div><span data-i="tqTech">Tech</span><b>Priya S.</b></div><div><span data-i="tqWrench">Wrench</span><b data-i="tqWrenchV">Calibrated Mar 2026</b></div><div><span data-i="tqRe">Re-torque</span><b data-i="tqReV">Reminder at 80 km</b></div></div></div></div>
+    </div></div></div>
+    <div class="pv"><div class="app"><div class="app-h"><b>INV-1187 · Northline Freight</b><span class="pill go" data-i="ready">Ready to approve</span></div><div class="app-b">
+      <table class="inv"><tr><th data-i="thItem">Item</th><th>CAD</th></tr>
+        <tr><td>11R22.5 16-ply · <span data-i="docPos">Steer left</span></td><td>612.00</td></tr><tr><td data-i="itRoad2">Road call + labour 1.5 h</td><td>285.00</td></tr><tr><td data-i="itCasing2">Casing credit</td><td>−40.00</td></tr>
+        <tr><td id="taxLbl">HST 13%</td><td id="taxV">111.41</td></tr><tr class="t"><td>Total</td><td id="totV">968.41</td></tr></table>
+      <div class="prov" id="prov"></div><div style="color:var(--dim);font-size:12.5px" data-i="provNote">Pick a province: tax is calculated, never guessed. Illustrative rates.</div>
+      <div class="attach"><span>📎 <span data-i="attWo">Work order</span></span><span>📎 <span data-i="attTq">Torque record</span></span><span>📎 <span data-i="attPh">3 photos</span></span></div>
+      <div class="inv-act"><span class="pill go">PO 77812 ✓</span><span class="pill go" data-i="unitOk">Unit 4521 ✓</span><span class="btn btn-hv" style="margin-left:auto;padding:9px 16px;font-size:13px" data-i="approve">Approve and send</span></div>
+    </div></div></div>
+  </div>
+</div></div></div></section>
 
-<section id="problems"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow" data-i="pEyebrow">Sound familiar?</span><h2 data-i="pH2">The truck is fixed. The paperwork isn't.</h2><p data-i="pLead">Commercial techs are the hardest people in the shop to hire. Their time shouldn't go to paperwork, yet these six things eat it every week.</p></div>
-  <div class="grid3">
-    <div class="pain reveal"><span class="num">01</span><h3 data-i="p1h">Work orders on paper and phones</h3><p data-i="p1">Unit numbers, positions and tread depths end up on a clipboard, in a text and in someone's memory. Anything not written down never gets billed.</p></div>
-    <div class="pain reveal"><span class="num">02</span><h3 data-i="p2h">Torque records you can't prove</h3><p data-i="p2">In Ontario a wheel separation is an absolute-liability offence, with fines up to $50,000. When a wheel comes off, the first question is: where's the torque record?</p></div>
-    <div class="pain reveal"><span class="num">03</span><h3 data-i="p3h">Road calls wreck the plan</h3><p data-i="p3">A blowout on the highway pulls a tech off the yard check, national-account jobs need re-keying into their portals, and the whole day is rearranged by phone.</p></div>
-    <div class="pain reveal"><span class="num">04</span><h3 data-i="p4h">Invoices go out days late</h3><p data-i="p4">Fleets send back invoices with the wrong unit number or a missing PO. Every day an invoice sits is another day before a slow payer even starts the clock.</p></div>
-    <div class="pain reveal"><span class="num">05</span><h3 data-i="p5h">Stock nobody can see</h3><p data-i="p5">Which sizes are on which truck? Casings sitting at the retreader? You find out when the tire you need isn't there.</p></div>
-    <div class="pain reveal"><span class="num">06</span><h3 data-i="p6h">Software built for car shops</h3><p data-i="p6">Most tools assume a bay, a car and a customer at the counter, not a unit number, a fleet PO and a shoulder of the 401.</p></div>
+<section id="value"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow reveal" data-i="vEyebrow">What you gain</span><h2 class="split" data-i="vH2">What we're building toward</h2></div>
+  <div class="values">
+    <div class="val reveal"><span class="pre" data-i="vPre1">Only</span><div class="v"><span data-count="2">2</span><small>min</small></div><h4 data-i="v1h">From voice note to work order</h4><p data-i="v1">What takes an evening of typing, matching and pricing becomes a quick review.</p></div>
+    <div class="val reveal"><span class="pre" data-i="vPre2">Same</span><div class="v"><span data-i="v2v">day</span></div><h4 data-i="v2h">Invoices to fleets</h4><p data-i="v2">Drafted before you're home, with PO and unit on every line, so fewer bounce back.</p></div>
+    <div class="val reveal"><span class="pre" data-i="vPre3">Every</span><div class="v"><span data-count="100">100</span><small>%</small></div><h4 data-i="v3h">Wheel torque-logged</h4><p data-i="v3">Value, pattern, tech and time on record, with re-torque reminders.</p></div>
+    <div class="val reveal"><span class="pre" data-i="vPre4">Under</span><div class="v"><span data-count="1">1</span><small>h</small></div><h4 data-i="v4h">To get started</h4><p data-i="v4">No IT project, no weekend workshop. Bring your price list and go.</p></div>
   </div>
+  <p class="note reveal" data-i="vNote">Pilot goals, not results. Real numbers will be published once pilot crews have used TreadFleet for a full quarter.</p>
 </div></section>
 
-<section id="how"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow" data-i="hEyebrow">How it works</span><h2 data-i="hH2">From the road call to the paid invoice</h2><p data-i="hLead">An operations assistant that does the office work around every job. It prepares; you approve.</p></div>
-  <div class="steps reveal">
-    <div class="step"><i class="prog"></i><span class="k">01 · <span data-i="st1k">CAPTURE</span></span><h3 data-i="st1h">Requests and notes</h3><p data-i="st1">Calls, texts and emails from fleets become jobs. At the truck, the tech speaks and snaps photos; tread depths, positions and parts are picked out.</p></div>
-    <div class="step"><i class="prog"></i><span class="k">02 · <span data-i="st2k">PLAN</span></span><h3 data-i="st2h">Dispatch</h3><p data-i="st2">Road calls slot in around planned yard checks, matching the closest tech with the right skills and the right tire on the truck.</p></div>
-    <div class="step"><i class="prog"></i><span class="k">03 · <span data-i="st3k">RECORD</span></span><h3 data-i="st3h">Work order and torque log</h3><p data-i="st3">Every wheel, every torque value, every casing, recorded per unit and position. Re-torque reminders go out on their own.</p></div>
-    <div class="step"><i class="prog"></i><span class="k">04 · <span data-i="st4k">BILL</span></span><h3 data-i="st4h">Invoice and payment</h3><p data-i="st4">The invoice is drafted from the work done, with the fleet's PO and provincial tax, ready before you're back at the shop.</p></div>
-  </div>
-  <div class="steps-nav"><button id="stepPrev" aria-label="Previous step">←</button><button id="stepNext" data-i="nextStep">Next step →</button><span id="stepCount" class="mono">01 / 04</span></div>
-  <div class="learn reveal"><span style="font-size:26px">↻</span><div data-i="learn" data-html><b>It learns your shop.</b> Your prices, your preferred brands, each fleet's PO rules and billing quirks. Every correction makes the next draft better.</div></div>
-</div></section>
-
-
-<section id="record"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow" data-i="rEyebrow">TreadFleet on the job</span><h2 data-i="rH2">One job. One record that fills itself in.</h2><p data-i="rLead">From the first call to the paid invoice, every step lands in the same job file, ready for the fleet, the inspector or your accountant.</p></div>
-  <div class="record reveal">
-    <ol class="stages" id="stages">
-      <li><span class="ck">1</span><span data-i="rs1">Road call received</span></li>
-      <li><span class="ck">2</span><span data-i="rs2">Tech dispatched</span></li>
-      <li><span class="ck">3</span><span data-i="rs3">Voice note at the truck</span></li>
-      <li><span class="ck">4</span><span data-i="rs4">Torque logged</span></li>
-      <li><span class="ck">5</span><span data-i="rs5">Invoice approved</span></li>
-      <li><span class="ck">6</span><span data-i="rs6">Re-torque confirmed</span></li>
-    </ol>
-    <div class="jobfile">
-      <div class="jh"><div><div class="mono" style="color:var(--hv);font-size:13px">JOB #1187</div><b>Northline Freight · Unit 4521</b></div><span class="pill blue" id="jobState" data-i="inProgress">In progress</span></div>
-      <div class="rows" id="jobRows">
-        <div><span data-i="jr1k">Call</span><b data-i="jr1v">07:42 · steer blowout, Hwy 401 km 362</b></div>
-        <div><span data-i="jr2k">Dispatched</span><b data-i="jr2v">Priya · truck 3 · 11R22.5 on board</b></div>
-        <div><span data-i="jr3k">Work done</span><b data-i="jr3v">Steer L replaced · casing kept for credit</b></div>
-        <div><span data-i="jr4k">Torque</span><b data-i="jr4v">450 ft-lb · 10 studs · 08:51</b></div>
-        <div><span data-i="jr5k">Invoice</span><b data-i="jr5v">INV-1187 · $968.41 · PO 77812</b></div>
-        <div><span data-i="jr6k">Re-torque</span><b data-i="jr6v">Confirmed by driver at 82 km</b></div>
-      </div>
+<section id="day"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow reveal" data-i="dEyebrow">TreadFleet on the job</span><h2 class="split" data-i="dH2">One road call. One record that writes itself.</h2><p class="reveal" data-i="dLead">Follow job #1187 from the first text to the re-torque, the way the office sees it.</p></div>
+  <div class="day reveal">
+    <div class="day-tabs" id="dayTabs">
+      <button class="on"><span class="no">01</span><span data-i="dt1">Call comes in</span><span class="ck">✓</span><i class="pg"></i></button>
+      <button><span class="no">02</span><span data-i="dt2">Tech dispatched</span><span class="ck">✓</span><i class="pg"></i></button>
+      <button><span class="no">03</span><span data-i="dt3">Voice note at the truck</span><span class="ck">✓</span><i class="pg"></i></button>
+      <button><span class="no">04</span><span data-i="dt4">Torque logged</span><span class="ck">✓</span><i class="pg"></i></button>
+      <button><span class="no">05</span><span data-i="dt5">Invoice approved</span><span class="ck">✓</span><i class="pg"></i></button>
+      <button><span class="no">06</span><span data-i="dt6">Re-torque confirmed</span><span class="ck">✓</span><i class="pg"></i></button>
     </div>
+    <div class="appwin"><div class="win-bar"><i></i><i></i><i></i><span class="url">app.treadfleet.ca/jobs/1187</span></div>
+      <div class="win-body">
+        <div class="side"><div class="brand">◉ TreadFleet</div><span data-i="sd1">Today</span><span data-i="sd2">Dispatch</span><span class="on" data-i="sd3">Jobs</span><span data-i="sd4">Fleets</span><span data-i="sd5">Stock</span><span data-i="sd6">Invoices</span></div>
+        <div>
+          <div class="dpane on"><h4 data-i="d1h">New road call</h4><div class="sub">07:42 · SMS · Northline Freight</div>
+            <div class="card-l"><div class="row"><span data-i="lbUnit">Unit</span><b>4521</b></div><div class="row"><span data-i="lbProb">Problem</span><b data-i="d1p">Steer blowout</b></div><div class="row"><span data-i="lbLoc">Location</span><b>401 EB · km 362</b></div><div class="row"><span>PO</span><b>77812 <span style="color:#1e9e57">✓</span></b></div></div>
+            <div class="srcs"><span data-i="srcSms">from SMS</span><span data-i="srcHist">fleet history</span></div></div>
+          <div class="dpane"><h4 data-i="d2h">Priya is on the way</h4><div class="sub" data-i="d2s">Closest tech with the size on board</div>
+            <div class="card-l"><div class="row"><span data-i="lbTech">Tech</span><b>Priya S. · Truck 3</b></div><div class="row"><span>ETA</span><b>34 min</b></div><div class="row"><span data-i="lbOnboard">On board</span><b>11R22.5 × 2</b></div><div class="row"><span data-i="lbBrief">Briefing sent</span><b data-i="d2b">Unit history, packing list</b></div></div></div>
+          <div class="dpane"><h4 data-i="d3h">Voice note, structured</h4><div class="sub">08:44 · 0:38 · <span data-i="d3s">transcribed and sorted</span></div>
+            <div class="live-trans" id="dayTrans"></div>
+            <div class="extract" id="dayEx"><div><small data-i="exPos">Position</small><b data-i="exPosV">Steer · Left</b></div><div><small data-i="exRem">Removed</small><b>6/32 · casing OK</b></div><div><small data-i="exIns">Installed</small><b>11R22.5 16-ply</b></div><div><small data-i="exTq">Torque</small><b>450 ft-lb</b></div><div><small data-i="exLab">Labour</small><b>1.5 h</b></div><div><small data-i="exPh">Photos</small><b data-i="exPhV">3 attached</b></div></div></div>
+          <div class="dpane"><h4 data-i="d4h">Torque on record</h4><div class="sub" data-i="d4s">Saved with the job, ready for any audit</div>
+            <div class="card-l"><div class="row"><span data-i="lbVal">Value</span><b>450 ft-lb · 10/10</b></div><div class="row"><span data-i="lbPat">Pattern</span><b data-i="d4p">Crisscross</b></div><div class="row"><span data-i="lbTime">Time</span><b>08:51</b></div><div class="row"><span data-i="lbRe">Re-torque</span><b data-i="d4r">Reminder set · 80 km</b></div></div></div>
+          <div class="dpane"><h4 data-i="d5h">Invoice approved and sent</h4><div class="sub" data-i="d5s">Approved from the owner's phone at 09:02</div>
+            <div class="card-l"><div class="row"><span data-i="lbInv">Invoice</span><b>INV-1187</b></div><div class="row"><span data-i="lbTot">Total</span><b>$968.41 CAD</b></div><div class="row"><span data-i="lbTo">Sent to</span><b>Northline Freight AP</b></div><div class="row"><span data-i="lbAtt">Attached</span><b data-i="d5a">Work order, torque record, photos</b></div></div></div>
+          <div class="dpane"><h4 data-i="d6h">Re-torque confirmed</h4><div class="sub" data-i="d6s">Driver confirmed by text at 82 km</div>
+            <div class="card-l"><div class="row"><span data-i="lbStatus">Status</span><b style="color:#1e9e57" data-i="d6st">Job closed</b></div><div class="row"><span data-i="lbFile">Job file</span><b data-i="d6f">6 entries, complete</b></div><div class="row"><span data-i="lbStock">Stock</span><b>Truck 3 · 11R22.5: 2 → 1</b></div><div class="row"><span data-i="lbCasing">Casing</span><b data-i="d6c">Queued for retreader credit</b></div></div></div>
+        </div></div></div>
   </div>
 </div></section>
 
-<section id="product"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow" data-i="tEyebrow">Product tour</span><h2 data-i="tH2">Everything a commercial tire crew runs on</h2><p data-i="tLead">Click through the modules. Start with one, add the rest when you're ready.</p></div>
-  <div class="tour reveal">
-    <div class="tabs" role="tablist">
-      <button class="on" data-t="0"><span data-i="t0">Work orders</span><small data-i="t0s">Voice to work order</small></button>
-      <button data-t="1"><span data-i="t1">Dispatch</span><small data-i="t1s">Road calls and yard checks</small></button>
-      <button data-t="2"><span data-i="t2">Fleet tire health</span><small data-i="t2s">Tread history per unit</small></button>
-      <button data-t="3"><span data-i="t3">Torque and inspections</span><small data-i="t3s">Records you can prove</small></button>
-      <button data-t="4"><span data-i="t4">Stock and casings</span><small data-i="t4s">Truck, shop and retreader</small></button>
-      <button data-t="5"><span data-i="t5">Invoicing and fleet portal</span><small data-i="t5s">Paid faster</small></button>
-    </div>
-    <div class="screen">
-      <div class="pane on">
-        <div class="mock"><div class="mh"><span>WO-2026-1192 · Prairie Haul · Unit 118</span><span class="pill go" data-i="ready">Ready for approval</span></div>
-          <table class="tbl"><tr><th data-i="thPos">Position</th><th data-i="thAction">Action</th><th data-i="thTread">Tread</th><th class="r">PSI</th></tr>
-            <tr><td>Drive · L outer</td><td data-i="aRepair">Repair (nail)</td><td>14/32</td><td class="r">100</td></tr>
-            <tr><td>Drive · R inner</td><td data-i="aReplace">Replace</td><td>4/32</td><td class="r">—</td></tr>
-            <tr><td>Trailer · axle 2 L</td><td data-i="aInspect">Inspect</td><td>9/32</td><td class="r">95</td></tr></table></div>
-        <div class="bul"><div><b data-i="b00">Speak it</b><span data-i="b00s">Voice notes in English or French, at the truck</span></div><div><b data-i="b01">Picked out for you</b><span data-i="b01s">Unit, position, tread, PSI, parts and labour</span></div><div><b data-i="b02">Priced from your list</b><span data-i="b02s">Never guessed: your prices, your rules</span></div></div>
-      </div>
-      <div class="pane">
-        <div class="mock"><div class="mh"><span data-i="today">Today · 4 techs</span><span class="pill warn" data-i="newRoad">1 new road call</span></div>
-          <div class="board"><div class="h">Tech</div><div class="h">7:00</div><div class="h">9:00</div><div class="h">11:00</div><div class="h x">13:00</div><div class="h x">15:00</div>
-            <div>Marc</div><div><span class="job b">Yard · Prairie Haul</span></div><div></div><div><span class="job y">Unit 118</span></div><div class="x"></div><div class="x"><span class="job b">Yard · Westbound</span></div>
-            <div>Priya</div><div></div><div><span class="job r" data-i="roadSlot">Road call · 401</span></div><div></div><div class="x"><span class="job y">Unit 77</span></div><div class="x"></div>
-            <div>Sam</div><div><span class="job b">Yard · Northline</span></div><div></div><div></div><div class="x"><span class="job y">Unit 4521</span></div><div class="x"></div></div></div>
-        <div class="bul"><div><b data-i="b10">Closest right tech</b><span data-i="b10s">Location, skills and the tire on the truck</span></div><div><b data-i="b11">One click to confirm</b><span data-i="b11s">The plan is proposed, you approve it</span></div><div><b data-i="b12">Job briefing</b><span data-i="b12s">Unit history and packing list on the tech's phone</span></div></div>
-      </div>
-      <div class="pane">
-        <div class="mock"><div class="mh"><span>Prairie Haul · 34 units</span><span class="pill warn" data-i="dueSoon">6 tires due soon</span></div>
-          <div class="health">
-            <span>Unit 118</span><div class="bar"><i style="width:22%;background:var(--warn)"></i></div><span class="mono">4/32</span>
-            <span>Unit 121</span><div class="bar"><i style="width:48%;background:var(--hv)"></i></div><span class="mono">8/32</span>
-            <span>Unit 130</span><div class="bar"><i style="width:80%;background:var(--go)"></i></div><span class="mono">14/32</span>
-            <span>Unit 144</span><div class="bar"><i style="width:35%;background:var(--hv)"></i></div><span class="mono">6/32</span></div></div>
-        <div class="bul"><div><b data-i="b20">History per position</b><span data-i="b20s">Every reading from every visit</span></div><div><b data-i="b21">Replacements predicted</b><span data-i="b21s">Wear trends turn into a parts list</span></div><div><b data-i="b22">Upsell honestly</b><span data-i="b22s">Show the fleet the data behind the quote</span></div></div>
-      </div>
-      <div class="pane">
-        <div class="mock"><div class="mh"><span data-i="torqueLog">Torque log · this week</span><span class="pill go">100% <span data-i="logged">logged</span></span></div>
-          <table class="tbl"><tr><th data-i="thUnit">Unit</th><th data-i="thWheel">Wheel</th><th class="r">ft-lb</th><th data-i="thRetorque">Re-torque</th></tr>
-            <tr><td>4521</td><td>Steer L</td><td class="r">450</td><td data-i="rtDone">Done · 82 km</td></tr>
-            <tr><td>118</td><td>Drive R inner</td><td class="r">450</td><td data-i="rtDue">Due · reminder sent</td></tr>
-            <tr><td>77</td><td>Trailer 2 L</td><td class="r">450</td><td data-i="rtDone2">Done · 95 km</td></tr></table></div>
-        <div class="bul"><div><b data-i="b30">Proof on demand</b><span data-i="b30s">Who torqued which wheel, when, to what</span></div><div><b data-i="b31">Re-torque reminders</b><span data-i="b31s">Sent to the driver or fleet automatically</span></div><div><b data-i="b32">Inspection-ready</b><span data-i="b32s">Exports for fleet audits and inspections</span></div></div>
-      </div>
-      <div class="pane">
-        <div class="mock"><div class="mh"><span data-i="stockTitle">Stock · trucks and shop</span><span class="pill warn" data-i="reorder">Reorder 11R22.5</span></div>
-          <table class="tbl"><tr><th data-i="thSize">Size</th><th data-i="thShop">Shop</th><th data-i="thTrucks">Trucks</th><th data-i="thCasings">At retreader</th></tr>
-            <tr><td>11R22.5</td><td>4</td><td>2</td><td>12</td></tr><tr><td>295/75R22.5</td><td>9</td><td>5</td><td>6</td></tr><tr><td>11R24.5</td><td>2</td><td>1</td><td>3</td></tr></table></div>
-        <div class="bul"><div><b data-i="b40">Every truck counted</b><span data-i="b40s">Stock updates as jobs are recorded</span></div><div><b data-i="b41">Reorder suggestions</b><span data-i="b41s">Based on what you actually use</span></div><div><b data-i="b42">Casing credits tracked</b><span data-i="b42s">Nothing lost at the retreader</span></div></div>
-      </div>
-      <div class="pane">
-        <div class="mock"><div class="mh"><span data-i="invTitle">Invoices · this week</span><span class="pill go" data-i="sameDay">Sent same day: 18 of 19</span></div>
-          <table class="tbl"><tr><th data-i="thFleet">Fleet</th><th>PO</th><th data-i="thStatus">Status</th><th class="r">Total</th></tr>
-            <tr><td>Northline Freight</td><td>77812</td><td data-i="stPaid">Paid</td><td class="r">$968.41</td></tr>
-            <tr><td>Prairie Haul</td><td>A-2291</td><td data-i="stSent">Sent</td><td class="r">$2,140.70</td></tr>
-            <tr><td>Westbound Logistics</td><td>WB-505</td><td data-i="stDraft">Draft</td><td class="r">$612.00</td></tr></table></div>
-        <div class="bul"><div><b data-i="b50">PO and unit on every line</b><span data-i="b50s">Fewer rejected invoices</span></div><div><b data-i="b51">Provincial tax built in</b><span data-i="b51s">GST, HST, PST and QST</span></div><div><b data-i="b52">Fleet portal</b><span data-i="b52s">Fleets see work done, records and invoices</span></div></div>
-      </div>
-    </div>
-  </div>
+<section id="app"><div class="wrap promo">
+  <div><span class="eyebrow reveal" data-i="aEyebrow">On the road</span><h2 class="split" style="font-size:clamp(32px,4.4vw,56px);font-weight:900;margin:14px 0 16px" data-i="aH2">Your techs get one big button.</h2>
+    <p class="reveal" style="color:var(--soft);font-size:18px;margin:0" data-i="aLead">Today's plan, the job and a record button. Same login as the office. No forms, no typing with gloves on.</p>
+    <ul class="feat reveal"><li><span class="ic">🗓</span><div data-i="f1" data-html><b>Today's plan</b>Yard checks and road calls in order, with unit history.</div></li><li><span class="ic">📍</span><div data-i="f2" data-html><b>One tap to the job</b>Call the driver, open navigation.</div></li><li><span class="ic">🎙</span><div data-i="f3" data-html><b>Press and talk</b>English or French. Photos attach to the right wheel.</div></li></ul></div>
+  <div class="ph reveal" id="promoPh"><div class="ph-in">
+    <div style="display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin-bottom:8px"><span>9:41</span><span>LTE ▮▮▮</span></div>
+    <b style="font:800 18px Archivo;margin:0 2px 10px" data-i="phToday">Today · Marc</b>
+    <div class="plan"><b>07:00 · Yard check</b><small>Prairie Haul · 12 units</small></div><div class="plan road"><b data-i="phRoad">09:20 · Road call</b><small>401 · km 362</small></div><div class="plan"><b>11:30 · Unit 118</b><small data-i="phU">Drive R inner · replace</small></div><div class="plan"><b>14:00 · Westbound</b><small data-i="phW">Re-torque · 3 units</small></div>
+    <div class="bigrec" data-i="talk">● Talk</div>
+  </div></div>
 </div></section>
 
-
-<section id="field"><div class="wrap field">
-  <div class="reveal">
-    <span class="eyebrow" data-i="fdEyebrow">On the road</span>
-    <h2 style="font-size:clamp(28px,3.8vw,44px);margin:10px 0 14px" data-i="fdH2">Your techs get one button</h2>
-    <p style="color:#c7cfd5;margin:0" data-i="fdLead">The phone app shows today's plan and records the job. No forms, no typing with gloves on.</p>
-    <ul><li data-i="fd1" data-html><b>Today's plan</b>: yard checks and road calls in order, with unit history and what to bring.</li>
-      <li data-i="fd2" data-html><b>Press and talk</b>: positions, tread depths, parts and torque, in English or French.</li>
-      <li data-i="fd3" data-html><b>Photos attach themselves</b>: to the right job and the right wheel.</li></ul>
-  </div>
-  <div class="phone reveal" aria-hidden="true">
-    <div class="ph"><span>9:41</span><span>LTE ▮▮▮</span></div>
-    <h5 data-i="phToday">Today · Marc</h5>
-    <div class="plan-item"><b>07:00 · Yard check</b><small>Prairie Haul · 12 units</small></div>
-    <div class="plan-item road"><b data-i="phRoad">09:20 · Road call</b><small>Hwy 401 km 362 · steer blowout</small></div>
-    <div class="plan-item"><b>11:30 · Unit 118</b><small data-i="phU118">Drive R inner · replace</small></div>
-    <div class="plan-item"><b>14:00 · Westbound</b><small data-i="phWB">Re-torque check · 3 units</small></div>
-    <button class="recbtn" type="button" data-i="phRec">● Talk</button>
-  </div>
-</div></section>
-
-<section id="crews"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow" data-i="cEyebrow">For crews of every size</span><h2 data-i="cH2">One tech with a service truck, or fifteen</h2></div>
-  <div class="grid2">
-    <div class="plan reveal"><h3 data-i="solo">Solo technician</h3><p class="who" data-i="soloWho">Owner-operators with a service truck and loyal fleet customers.</p>
-      <ul><li data-i="so1">Voice notes to work orders and invoices</li><li data-i="so2">Torque log and re-torque reminders</li><li data-i="so3">Truck stock and casing tracking</li><li data-i="so4">Get paid faster with same-day invoices</li></ul></div>
-    <div class="plan feature reveal"><h3 data-i="crew">Crew of up to 15</h3><p class="who" data-i="crewWho">Commercial tire shops and mobile fleets with an office or dispatcher.</p>
-      <ul><li data-i="cr1">Everything in Solo, for every tech</li><li data-i="cr2">Dispatch board for road calls and yard checks</li><li data-i="cr3">Fleet tire health and predicted replacements</li><li data-i="cr4">Fleet portal, approvals and reporting</li></ul></div>
-  </div>
-</div></section>
-
-<section id="targets"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow" data-i="gEyebrow">What we're building toward</span><h2 data-i="gH2">Pilot goals</h2></div>
-  <div class="targets">
-    <div class="target reveal"><div class="v" data-count="2" data-pre="&lt;" data-suf=" min">&lt;2 min</div><p data-i="g1">from voice note to a finished work order</p></div>
-    <div class="target reveal"><div class="v" data-i="g2v">Same day</div><p data-i="g2">invoices to fleets, with PO and unit on every line</p></div>
-    <div class="target reveal"><div class="v" data-count="100" data-suf="%">100%</div><p data-i="g3">of wheels torque-logged, with re-torque reminders</p></div>
-    <div class="target reveal"><div class="v" data-count="1" data-pre="&lt;" data-suf=" h">&lt;1 h</div><p data-i="g4">to get started, no IT project</p></div>
-  </div>
-  <p class="note" data-i="gNote">These are goals for the pilot, not results. We'll publish real numbers once pilot crews have used it for a full quarter.</p>
-</div></section>
-
-<section id="trust"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow" data-i="trEyebrow">Our promise</span><h2 data-i="trH2">Built to be trusted on the job</h2></div>
+<section id="faq"><div class="wrap">
+  <div class="sec-head"><span class="eyebrow reveal" data-i="tEyebrow">Our promise</span><h2 class="split" data-i="tH2">Built to be trusted on the job</h2></div>
   <div class="trust">
-    <div class="reveal"><h3 data-i="tr1h">You approve everything</h3><p data-i="tr1">No work order, invoice or schedule goes out without your OK. Change anything in seconds.</p></div>
-    <div class="reveal"><h3 data-i="tr2h">A record, not a guess</h3><p data-i="tr2">Prices come from your own list, and totals and tax are calculated, never invented. Every torque value is stored as it was recorded.</p></div>
-    <div class="reveal"><h3 data-i="tr3h">Canadian data</h3><p data-i="tr3">Planned hosting in Canada, built for PIPEDA and Quebec's Law 25. Export your data any time.</p></div>
-    <div class="reveal"><h3 data-i="tr4h">English and French</h3><p data-i="tr4">Speak, read and invoice in the language your crew and your fleets use.</p></div>
+    <div class="reveal"><span class="ic">✋</span><h3 data-i="tr1h">You stay in control</h3><p data-i="tr1">No work order, invoice or schedule goes out without your OK. Change anything in seconds.</p><div class="tags"><span data-i="tg1">Approval workflow</span><span data-i="tg2">Full audit trail</span></div></div>
+    <div class="reveal"><span class="ic">🍁</span><h3 data-i="tr2h">Canadian data</h3><p data-i="tr2">Hosted in Canada, built for PIPEDA and Quebec's Law 25. Export your data any time.</p><div class="tags"><span>Canada (Central)</span><span>PIPEDA</span><span data-i="tg3">Law 25</span></div></div>
+    <div class="reveal"><span class="ic">🔧</span><h3 data-i="tr3h">A record, not a guess</h3><p data-i="tr3">Prices from your list, tax calculated, torque stored as recorded. Never invented.</p><div class="tags"><span data-i="tg4">Your price list</span><span data-i="tg5">EN / FR</span></div></div>
   </div>
+  <details><summary data-i="q1">Is this another app my techs have to learn?</summary><p data-i="a1">No. Techs press record and talk, like leaving a voice message. Photos attach to the job. Everything else happens in the background.</p></details>
+  <details><summary data-i="q2">Does it work for commercial truck tires, not just cars?</summary><p data-i="a2">That's the point: unit numbers, steer, drive and trailer positions, 32nds, casings, retreads, torque and re-torque, fleet POs.</p></details>
+  <details><summary data-i="q3">What if it gets something wrong?</summary><p data-i="a3">Nothing goes out without your approval. Fix it in seconds and it remembers the correction. Prices always come from your own list.</p></details>
+  <details><summary data-i="q4">Can it handle road calls and planned yard checks?</summary><p data-i="a4">Yes. Road calls slot in around planned work, and dispatch shows who is closest with the right tire on the truck.</p></details>
+  <details><summary data-i="q5">Does it work with my accounting software?</summary><p data-i="a5">Invoices export for your bookkeeper. Direct connections are on the pilot roadmap; tell us which tool you use.</p></details>
+  <details><summary data-i="q6">What does it cost?</summary><p data-i="a6">We're in the pilot phase. Pilot crews get lasting special pricing and are first to know the final price.</p></details>
 </div></section>
+
+<section id="founder"><div class="wrap"><div class="founder reveal">
+  <img src="founder.jpg" alt="Prapanch Kokkalemada, founder of TreadFleet" loading="lazy">
+  <div><span class="eyebrow" data-i="fEyebrow">Built from the warehouse floor</span>
+    <p class="q" data-i="fQuote">I ran tire inventory and fleet accounts in Calgary. The trucks got fixed fast. The paperwork took the evenings. TreadFleet is the office help I wanted then.</p>
+    <p style="color:var(--soft);margin:0 0 18px" data-i="fBio">Prapanch Kokkalemada, founder. Former Sales &amp; Operations Coordinator and Business Account Manager at a commercial tire distributor in Calgary: an 18,000 sq ft warehouse, supplier negotiations and hundreds of logistics customers.</p>
+    <div class="creds"><span data-i="c1">Tire distribution, Calgary</span><span data-i="c2">Stockouts cut 30%</span><span>MBA</span><span data-i="c4">Supply chain</span></div></div>
+</div></div></section>
 
 <section id="pilot"><div class="wrap pilot">
-  <div class="reveal">
-    <span class="eyebrow" data-i="fEyebrow">Pilot program · 10 crews</span>
-    <h2 style="font-size:clamp(28px,3.8vw,44px);margin:10px 0 14px" data-i="fH2">Help shape it from day one</h2>
-    <p style="color:#c7cfd5;margin:0" data-i="fLead">We're starting with ten commercial tire crews across Canada. Tell us how you work today.</p>
-    <ul class="perks"><li data-i="pk1">Personal onboarding with the founder</li><li data-i="pk2">Your workflow drives what gets built next</li><li data-i="pk3">Lasting pilot pricing</li></ul>
-  </div>
+  <div class="reveal"><span class="eyebrow" data-i="plEyebrow">Pilot program · 10 crews</span>
+    <h2 style="font-size:clamp(32px,4.4vw,56px);font-weight:900;margin:14px 0 16px" data-i="plH2">Help shape it from day one</h2>
+    <p style="color:var(--soft);font-size:18px;margin:0" data-i="plLead">We're starting with ten commercial tire crews across Canada. Tell us how you work today.</p>
+    <div class="seats" id="seats" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div style="color:var(--dim);font-size:13px" data-i="seatNote">10 pilot seats · applications reviewed personally</div>
+    <ul class="perks"><li data-i="pk1">Personal onboarding with the founder</li><li data-i="pk2">Your workflow drives what gets built next</li><li data-i="pk3">Lasting pilot pricing</li></ul></div>
   <form class="apply reveal" id="applyForm" novalidate>
     <label><span data-i="fName">Your name</span><input name="name" required autocomplete="name"></label>
     <label><span data-i="fCompany">Company</span><input name="company" required autocomplete="organization"></label>
-    <label><span data-i="fRole">Your role</span><select name="role" required>
-      <option value="" data-i="choose">Choose…</option><option value="owner_operator" data-i="rOwnerOp">Owner-operator technician</option><option value="shop_owner" data-i="rShop">Shop or crew owner</option><option value="dispatcher" data-i="rDispatch">Dispatcher / service manager</option><option value="fleet" data-i="rFleet">Fleet maintenance manager</option><option value="other" data-i="rOther">Other</option></select></label>
-    <label><span data-i="fProvince">Province</span><select name="province" required>
-      <option value="" data-i="choose">Choose…</option><option>AB</option><option>BC</option><option>MB</option><option>NB</option><option>NL</option><option>NS</option><option>NT</option><option>NU</option><option>ON</option><option>PE</option><option>QC</option><option>SK</option><option>YT</option></select></label>
+    <label><span data-i="fRole">Your role</span><select name="role" required><option value="" data-i="choose">Choose…</option><option value="owner_operator" data-i="rOwnerOp">Owner-operator technician</option><option value="shop_owner" data-i="rShop">Shop or crew owner</option><option value="dispatcher" data-i="rDispatch">Dispatcher / service manager</option><option value="fleet" data-i="rFleet">Fleet maintenance manager</option><option value="other" data-i="rOther">Other</option></select></label>
+    <label><span data-i="fProvince">Province</span><select name="province" required><option value="" data-i="choose">Choose…</option><option>AB</option><option>BC</option><option>MB</option><option>NB</option><option>NL</option><option>NS</option><option>NT</option><option>NU</option><option>ON</option><option>PE</option><option>QC</option><option>SK</option><option>YT</option></select></label>
     <label><span data-i="fTechs">Technicians</span><select name="techs" required><option value="" data-i="choose">Choose…</option><option value="1">1</option><option value="2-5">2–5</option><option value="6-10">6–10</option><option value="11-15">11–15</option><option value="16+">16+</option></select></label>
     <label><span data-i="fFleets">Fleet customers served</span><input name="fleets" inputmode="numeric" placeholder="e.g. 12"></label>
     <label class="full"><span data-i="fPain">Biggest headache today</span><textarea name="pain" rows="3" data-i-ph="fPainPh" placeholder="e.g. invoices go out days late, torque records on paper"></textarea></label>
     <label><span data-i="fEmail">Email</span><input name="email" type="email" required autocomplete="email"></label>
     <label><span data-i="fPhone">Phone (optional)</span><input name="phone" type="tel" autocomplete="tel"></label>
     <label class="consent full"><input type="checkbox" name="consent" required><span data-i="fConsent" data-html>I agree that my details are stored to contact me about the pilot, as described in the <a href="privacy.html">privacy policy</a>. No newsletter, no sharing.</span></label>
-    <div class="full"><button class="btn btn-hv" type="submit" data-i="fSubmit">Apply for the pilot</button></div>
+    <div class="full"><button class="btn btn-hv" type="submit"><span data-i="fSubmit">Apply for the pilot</span> <span class="arr">→</span></button></div>
     <div class="formmsg" id="formMsg" role="status"></div>
   </form>
 </div></section>
 
-<section id="faq"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow">FAQ</span><h2 data-i="qH2">Questions crews ask</h2></div>
-  <details><summary data-i="q1">Is this another app my techs have to learn?</summary><p data-i="a1">No. Techs press record and talk, the way they'd leave a voice message. Photos attach to the job. Everything else happens in the background.</p></details>
-  <details><summary data-i="q2">Does it work for commercial truck tires, not just cars?</summary><p data-i="a2">That's the whole point: unit numbers, steer, drive and trailer positions, 32nds, casings, retreads, torque and re-torque, fleet POs.</p></details>
-  <details><summary data-i="q3">What if it gets something wrong?</summary><p data-i="a3">Nothing goes out without your approval. You fix it in seconds, and it remembers the correction for next time. Prices always come from your own list.</p></details>
-  <details><summary data-i="q4">Can it handle road calls and planned yard checks?</summary><p data-i="a4">Yes. Road calls get slotted in around planned work, and the dispatch board shows who is closest with the right tire on the truck.</p></details>
-  <details><summary data-i="q5">Does it work with my accounting software?</summary><p data-i="a5">Invoices can be exported for your bookkeeper. Direct connections to common accounting tools are on the pilot roadmap; tell us which one you use.</p></details>
-  <details><summary data-i="q6">Is it available in French?</summary><p data-i="a6">Yes. The app, voice notes and invoices work in English and French.</p></details>
-  <details><summary data-i="q7">What does it cost?</summary><p data-i="a7">We're in the pilot phase. Pilot crews get lasting special pricing and are the first to know the final price.</p></details>
-  <details><summary data-i="q8">Where is my data stored?</summary><p data-i="a8">Hosting in Canada is planned for launch, built for PIPEDA and Quebec's Law 25. You can export your data at any time.</p></details>
-</div></section>
-
 <footer><div class="wrap">
-  <div><b class="brand" style="color:var(--text)">TreadFleet</b> · <span data-i="fooTag">AI operations for commercial tire crews. Made in Canada.</span></div>
-  <div><a href="privacy.html" data-i="privacy">Privacy</a><a href="terms.html" data-i="terms">Terms</a><a href="#pilot" data-i="ctaApply">Apply for the pilot</a></div>
+  <div><b style="color:var(--text)">TreadFleet</b> · <span data-i="fooTag">The digital dispatcher for commercial tire crews. Made in Canada.</span></div>
+  <div><a href="privacy.html" data-i="privacy">Privacy</a><a href="terms.html" data-i="terms">Terms</a><a href="#pilot" data-i="cta">Apply for the pilot</a></div>
 </div></footer>
-
-<script>
-// ---------- copy (EN/FR). French drafted for review by a native speaker before launch. ----------
-const T = {
- en: {},
- fr: {
-  nextStep:"Étape suivante →", navRecord:"Sur le terrain",
-  rEyebrow:"TreadFleet sur le terrain", rH2:"Un travail. Un dossier qui se remplit tout seul.", rLead:"Du premier appel à la facture payée, chaque étape arrive dans le même dossier, prêt pour la flotte, l'inspecteur ou votre comptable.",
-  rs1:"Appel de service reçu", rs2:"Technicien envoyé", rs3:"Note vocale au camion", rs4:"Couple consigné", rs5:"Facture approuvée", rs6:"Resserrage confirmé",
-  inProgress:"En cours", done:"Terminé", jr1k:"Appel", jr1v:"07 h 42 · éclatement directrice, 401 km 362", jr2k:"Envoyé", jr2v:"Priya · camion 3 · 11R22.5 à bord", jr3k:"Travail", jr3v:"Directrice G remplacée · carcasse gardée pour crédit", jr4k:"Couple", jr4v:"450 lb-pi · 10 goujons · 08 h 51", jr5k:"Facture", jr5v:"INV-1187 · 968,41 $ · BC 77812", jr6k:"Resserrage", jr6v:"Confirmé par le chauffeur à 82 km",
-  fdEyebrow:"Sur la route", fdH2:"Vos techniciens ont un seul bouton", fdLead:"L'application affiche le plan du jour et enregistre le travail. Pas de formulaires, pas de saisie avec des gants.",
-  fd1:"<b>Le plan du jour</b> : vérifications en cour et appels de service dans l'ordre, avec l'historique de l'unité et le matériel à apporter.", fd2:"<b>Appuyez et parlez</b> : positions, profondeurs, pièces et couple, en français ou en anglais.", fd3:"<b>Les photos s'attachent toutes seules</b> : au bon travail et à la bonne roue.",
-  phToday:"Aujourd'hui · Marc", phRoad:"09 h 20 · Appel de service", phU118:"Motrice D intérieure · remplacer", phWB:"Vérification du resserrage · 3 unités", phRec:"● Parler",
-  navHow:"Fonctionnement", navProduct:"Produit", navCrews:"Pour les équipes", navTrust:"Confiance", navFaq:"FAQ",
-  ctaApply:"Postuler au projet pilote", ctaHow:"Voir le fonctionnement",
-  heroEyebrow:"Pour les équipes de pneus commerciaux au Canada",
-  heroH1:"Parlez au camion. La paperasse est <em>faite</em> avant votre retour dans la cabine.",
-  heroLead:"Une seule note vocale à l'unité. Votre bon de travail, votre registre de couple, votre inventaire et la facture au transporteur sont prêts pour votre approbation. Conçu pour les techniciens qui servent des flottes de camions, seuls ou avec une équipe de quinze.",
-  proof1:"Vous approuvez tout", proof2:"Anglais et français", proof3:"La voix d'abord, gants aux mains",
-  demoTitle:"Appel de service · Unité 4521", s0h:"1 · Le technicien parle", recording:"Enregistrement", s1h:"2 · Il comprend le travail",
-  s2h:"3 · Bon de travail et registre de couple remplis", roadcall:"Appel de service", woPos:"Position", woRemoved:"Retiré", woInstalled:"Installé", woTorque:"Couple", woRetorque:"Rappel de resserrage", woRetorqueV:"après 80 km", woStock:"Stock du camion",
-  s3h:"4 · Facture prête pour votre approbation", draft:"Brouillon", liRoad:"Appel de service + main-d'œuvre (1,5 h)", liCasing:"Crédit de carcasse", approve:"Approuver et envoyer", sent:"Envoyée à Northline Freight ✓",
-  demoNote:"Exemple illustratif. Noms et prix fictifs.", pause:"Pause", play:"Lecture",
-  pEyebrow:"Ça vous dit quelque chose?", pH2:"Le camion est réparé. La paperasse, non.", pLead:"Les techniciens en pneus commerciaux sont les plus difficiles à recruter. Leur temps ne devrait pas aller à la paperasse, pourtant ces six choses le grugent chaque semaine.",
-  p1h:"Des bons de travail sur papier et au téléphone", p1:"Numéros d'unité, positions et profondeurs de bande finissent sur une planchette, dans un texto et dans la mémoire de quelqu'un. Ce qui n'est pas noté n'est jamais facturé.",
-  p2h:"Des registres de couple impossibles à prouver", p2:"En Ontario, une perte de roue est une infraction de responsabilité absolue, avec des amendes jusqu'à 50 000 $. Quand une roue se détache, la première question est : où est le registre de couple?",
-  p3h:"Les appels de service chamboulent le plan", p3:"Un éclatement sur l'autoroute sort un technicien de la vérification en cour, les travaux de comptes nationaux sont à ressaisir dans leurs portails, et toute la journée se réorganise au téléphone.",
-  p4h:"Des factures envoyées avec des jours de retard", p4:"Les flottes renvoient les factures avec le mauvais numéro d'unité ou sans bon de commande. Chaque jour de retard repousse encore un paiement déjà lent.",
-  p5h:"Un inventaire que personne ne voit", p5:"Quelles dimensions sont dans quel camion? Des carcasses chez le rechapeur? Vous le découvrez quand le pneu manque.",
-  p6h:"Des logiciels pensés pour les garages auto", p6:"La plupart des outils supposent une baie, une voiture et un client au comptoir, pas un numéro d'unité, un bon de commande de flotte et l'accotement de la 401.",
-  hEyebrow:"Fonctionnement", hH2:"De l'appel de service à la facture payée", hLead:"Un assistant d'opérations qui fait le travail de bureau autour de chaque intervention. Il prépare; vous approuvez.",
-  st1k:"CAPTER", st1h:"Demandes et notes", st1:"Appels, textos et courriels des flottes deviennent des travaux. Au camion, le technicien parle et prend des photos; profondeurs, positions et pièces sont repérées.",
-  st2k:"PLANIFIER", st2h:"Répartition", st2:"Les appels de service s'insèrent autour des vérifications en cour planifiées, avec le technicien le plus proche, les bonnes compétences et le bon pneu dans le camion.",
-  st3k:"CONSIGNER", st3h:"Bon de travail et registre de couple", st3:"Chaque roue, chaque valeur de couple, chaque carcasse, par unité et par position. Les rappels de resserrage partent tout seuls.",
-  st4k:"FACTURER", st4h:"Facture et paiement", st4:"La facture est préparée à partir du travail fait, avec le bon de commande et la taxe provinciale, avant votre retour à l'atelier.",
-  learn:"<b>Il apprend votre atelier.</b> Vos prix, vos marques préférées, les règles de chaque flotte. Chaque correction améliore le prochain brouillon.",
-  tEyebrow:"Visite du produit", tH2:"Tout ce dont une équipe de pneus commerciaux a besoin", tLead:"Cliquez sur les modules. Commencez par un, ajoutez les autres au besoin.",
-  t0:"Bons de travail", t0s:"De la voix au bon de travail", t1:"Répartition", t1s:"Appels de service et vérifications en cour", t2:"Santé des pneus de la flotte", t2s:"Historique par unité", t3:"Couple et inspections", t3s:"Des registres prouvables", t4:"Stock et carcasses", t4s:"Camion, atelier, rechapeur", t5:"Facturation et portail flotte", t5s:"Payé plus vite",
-  ready:"Prêt pour approbation", thPos:"Position", thAction:"Action", thTread:"Bande", aRepair:"Réparation (clou)", aReplace:"Remplacement", aInspect:"Inspection",
-  b00:"Dites-le", b00s:"Notes vocales en français ou en anglais, au camion", b01:"Repéré pour vous", b01s:"Unité, position, bande, pression, pièces et main-d'œuvre", b02:"Prix de votre liste", b02s:"Jamais deviné : vos prix, vos règles",
-  today:"Aujourd'hui · 4 techniciens", newRoad:"1 nouvel appel de service", roadSlot:"Appel de service · 401", b10:"Le bon technicien le plus proche", b10s:"Position, compétences et pneu dans le camion", b11:"Un clic pour confirmer", b11s:"Le plan est proposé, vous l'approuvez", b12:"Fiche d'intervention", b12s:"Historique de l'unité et liste de matériel sur le téléphone",
-  dueSoon:"6 pneus à remplacer bientôt", b20:"Historique par position", b20s:"Chaque mesure de chaque visite", b21:"Remplacements prévus", b21s:"L'usure devient une liste de pièces", b22:"Vendre honnêtement", b22s:"Montrez à la flotte les données derrière la soumission",
-  torqueLog:"Registre de couple · cette semaine", logged:"consigné", thUnit:"Unité", thWheel:"Roue", thRetorque:"Resserrage", rtDone:"Fait · 82 km", rtDue:"Dû · rappel envoyé", rtDone2:"Fait · 95 km",
-  b30:"Preuve sur demande", b30s:"Qui a serré quelle roue, quand, à quelle valeur", b31:"Rappels de resserrage", b31s:"Envoyés au chauffeur ou à la flotte automatiquement", b32:"Prêt pour l'inspection", b32s:"Exports pour audits et inspections",
-  stockTitle:"Stock · camions et atelier", reorder:"Recommander 11R22.5", thSize:"Dimension", thShop:"Atelier", thTrucks:"Camions", thCasings:"Chez le rechapeur",
-  b40:"Chaque camion compté", b40s:"Le stock se met à jour avec chaque intervention", b41:"Suggestions de commande", b41s:"Selon ce que vous utilisez vraiment", b42:"Crédits de carcasse suivis", b42s:"Rien de perdu chez le rechapeur",
-  invTitle:"Factures · cette semaine", sameDay:"Envoyées le jour même : 18 sur 19", thFleet:"Flotte", thStatus:"Statut", stPaid:"Payée", stSent:"Envoyée", stDraft:"Brouillon",
-  b50:"Bon de commande et unité sur chaque ligne", b50s:"Moins de factures refusées", b51:"Taxe provinciale intégrée", b51s:"TPS, TVH, TVP et TVQ", b52:"Portail flotte", b52s:"Les flottes voient travaux, registres et factures",
-  cEyebrow:"Pour toutes les tailles d'équipe", cH2:"Un technicien avec son camion de service, ou quinze",
-  solo:"Technicien autonome", soloWho:"Propriétaires-exploitants avec un camion de service et des flottes fidèles.", so1:"Notes vocales vers bons de travail et factures", so2:"Registre de couple et rappels de resserrage", so3:"Suivi du stock du camion et des carcasses", so4:"Payé plus vite grâce aux factures du jour même",
-  crew:"Équipe jusqu'à 15", crewWho:"Ateliers de pneus commerciaux et flottes mobiles avec un bureau ou un répartiteur.", cr1:"Tout ce que contient Autonome, pour chaque technicien", cr2:"Tableau de répartition des appels de service et vérifications en cour", cr3:"Santé des pneus de la flotte et remplacements prévus", cr4:"Portail flotte, approbations et rapports",
-  gEyebrow:"Ce que nous visons", gH2:"Objectifs du pilote", g1:"de la note vocale au bon de travail terminé", g2v:"Le jour même", g2:"factures aux flottes, avec bon de commande et unité sur chaque ligne", g3:"des roues consignées, avec rappels de resserrage", g4:"pour démarrer, sans projet informatique",
-  gNote:"Ce sont des objectifs pour le pilote, pas des résultats. Nous publierons les vrais chiffres après un trimestre complet d'utilisation.",
-  trEyebrow:"Notre promesse", trH2:"Conçu pour inspirer confiance sur le terrain", tr1h:"Vous approuvez tout", tr1:"Aucun bon de travail, aucune facture ni aucun horaire ne part sans votre accord.", tr2h:"Un registre, pas une supposition", tr2:"Les prix viennent de votre liste; totaux et taxes sont calculés, jamais inventés. Chaque valeur de couple est conservée telle qu'enregistrée.", tr3h:"Données canadiennes", tr3:"Hébergement au Canada prévu, conçu pour la LPRPDE et la Loi 25 du Québec. Exportez vos données en tout temps.", tr4h:"Français et anglais", tr4:"Parlez, lisez et facturez dans la langue de votre équipe et de vos flottes.",
-  fEyebrow:"Projet pilote · 10 équipes", fH2:"Contribuez dès le premier jour", fLead:"Nous commençons avec dix équipes de pneus commerciaux au Canada. Dites-nous comment vous travaillez aujourd'hui.",
-  pk1:"Accompagnement personnel par le fondateur", pk2:"Votre façon de travailler oriente la suite", pk3:"Tarif pilote durable",
-  fName:"Votre nom", fCompany:"Entreprise", fRole:"Votre rôle", choose:"Choisir…", rOwnerOp:"Technicien propriétaire-exploitant", rShop:"Propriétaire d'atelier ou d'équipe", rDispatch:"Répartiteur / directeur de service", rFleet:"Responsable de l'entretien de flotte", rOther:"Autre",
-  fProvince:"Province", fTechs:"Techniciens", fFleets:"Flottes servies", fPain:"Votre plus gros casse-tête", fPainPh:"p. ex. factures envoyées en retard, registres de couple sur papier", fEmail:"Courriel", fPhone:"Téléphone (facultatif)",
-  fConsent:"J'accepte que mes coordonnées soient conservées pour me contacter au sujet du pilote, comme décrit dans la <a href=\"privacy.html\">politique de confidentialité</a>. Pas d'infolettre, aucun partage.", fSubmit:"Postuler au projet pilote",
-  qH2:"Les questions des équipes", q1:"Encore une application que mes techniciens doivent apprendre?", a1:"Non. Le technicien appuie sur enregistrer et parle, comme pour un message vocal. Les photos s'attachent au travail. Le reste se fait en arrière-plan.",
-  q2:"Est-ce que ça fonctionne pour les pneus de camion, pas seulement les voitures?", a2:"C'est tout l'objectif : numéros d'unité, positions directrice, motrice et remorque, 32e de pouce, carcasses, rechapage, couple et resserrage, bons de commande de flotte.",
-  q3:"Et s'il se trompe?", a3:"Rien ne part sans votre approbation. Vous corrigez en quelques secondes et il s'en souvient. Les prix viennent toujours de votre liste.",
-  q4:"Gère-t-il les appels de service et les vérifications planifiées?", a4:"Oui. Les appels de service s'insèrent autour du travail planifié, et le tableau montre qui est le plus proche avec le bon pneu.",
-  q5:"Fonctionne-t-il avec mon logiciel comptable?", a5:"Les factures s'exportent pour votre comptable. Les connexions directes aux logiciels comptables courants sont prévues pendant le pilote; dites-nous lequel vous utilisez.",
-  q6:"Est-il disponible en français?", a6:"Oui. L'application, les notes vocales et les factures fonctionnent en français et en anglais.",
-  q7:"Combien ça coûte?", a7:"Nous sommes en phase pilote. Les équipes pilotes obtiennent un tarif spécial durable et connaissent le prix final en premier.",
-  q8:"Où sont stockées mes données?", a8:"L'hébergement au Canada est prévu pour le lancement, conçu pour la LPRPDE et la Loi 25. Vous pouvez exporter vos données en tout temps.",
-  fooTag:"Opérations IA pour les équipes de pneus commerciaux. Fait au Canada.", privacy:"Confidentialité", terms:"Conditions",
-  msgOk:"Merci! Nous vous contactons personnellement très bientôt.", msgErr:"Envoi impossible pour le moment. Écrivez-nous et réessayez plus tard.", msgCheck:"Veuillez remplir les champs requis et accepter la politique de confidentialité."
- }
-};
-const EN_MSG = {inProgress:'In progress', done:'Done', msgOk:"Thanks! We'll reach out to you personally very soon.", msgErr:"We couldn't send that right now. Please try again later.", msgCheck:"Please fill in the required fields and accept the privacy policy.", pause:"Pause", play:"Play"};
-let LANG = 'en';
-// capture English from the page itself so the HTML stays the single source for EN
-document.querySelectorAll('[data-i]').forEach(el=>{ const k=el.dataset.i; if(!(k in T.en)) T.en[k] = el.hasAttribute('data-html') ? el.innerHTML : el.textContent; });
-document.querySelectorAll('[data-i-ph]').forEach(el=>{ T.en[el.dataset.iPh] = el.placeholder; });
-Object.assign(T.en, EN_MSG);
-const t = k => (T[LANG] && T[LANG][k]) || T.en[k] || k;
-function setLang(l){
-  LANG = l; document.documentElement.lang = l;
-  document.querySelectorAll('[data-i]').forEach(el=>{ const v = t(el.dataset.i); if(el.hasAttribute('data-html')) el.innerHTML = v; else el.textContent = v; });
-  document.querySelectorAll('[data-i-ph]').forEach(el=>{ el.placeholder = t(el.dataset.iPh); });
-  document.querySelectorAll('.lang button').forEach(b=> b.classList.toggle('on', b.dataset.lang===l));
-  try{ localStorage.setItem('lang', l); }catch(e){}
-  runDemo(true);
-}
-document.querySelectorAll('.lang button').forEach(b=> b.addEventListener('click', ()=> setLang(b.dataset.lang)));
-
-// ---------- hero demo ----------
-const SCRIPT = {
-  en: [["Unit ",0],["4521",1],[", steer left. Came off at ",0],["6/32",1],[", casing looks good. Put on a new ",0],["11R22.5",1],[", torqued to ",0],["450",1],[". Road call, hour and a half.",0]],
-  fr: [["Unité ",0],["4521",1],[", directrice gauche. Retiré à ",0],["6/32",1],[", carcasse correcte. Posé un ",0],["11R22.5",1],[" neuf, serré à ",0],["450",1],[". Appel de service, une heure et demie.",0]]
-};
-const CHIPS = { en:[["Unit","4521"],["Position","Steer · L"],["Removed","6/32"],["Casing","OK → credit"],["Installed","11R22.5"],["Torque","450 ft-lb"],["Labour","1.5 h road call"]],
-                fr:[["Unité","4521"],["Position","Directrice · G"],["Retiré","6/32"],["Carcasse","OK → crédit"],["Installé","11R22.5"],["Couple","450 lb-pi"],["Main-d'œuvre","1,5 h appel de service"]] };
-let step = 0, timers = [], playing = true;
-const stages = [...document.querySelectorAll('.stage')], dots = [...document.querySelectorAll('#dsteps button')];
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-function clearT(){ timers.forEach(clearTimeout); timers = []; }
-function show(i){
-  step = i; stages.forEach((s,j)=> s.classList.toggle('on', j===i)); dots.forEach((d,j)=> d.classList.toggle('on', j===i));
-  if(i===0) typeMemo(); if(i===1) dealChips(); if(i===3) document.getElementById('sentMsg').classList.remove('on');
-}
-function typeMemo(){
-  const el = document.getElementById('transcript'); el.innerHTML = '';
-  const parts = SCRIPT[LANG]; let html = '', p = 0, c = 0;
-  if(reduce){ el.innerHTML = parts.map(([s,h])=> h?`<mark>${s}</mark>`:s).join(''); return; }
-  const tick = ()=>{ if(p >= parts.length) return; const [s,h] = parts[p];
-    c++; const done = parts.slice(0,p).map(([x,hh])=> hh?`<mark>${x}</mark>`:x).join(''); const cur = s.slice(0,c);
-    el.innerHTML = done + (h?`<mark>${cur}</mark>`:cur);
-    if(c >= s.length){ p++; c = 0; } timers.push(setTimeout(tick, 28)); };
-  tick();
-}
-function dealChips(){
-  const box = document.getElementById('chips'); box.innerHTML = CHIPS[LANG].map(([k,v])=>`<span class="chip">${k}: <b>${v}</b></span>`).join('');
-  [...box.children].forEach((ch,i)=> timers.push(setTimeout(()=> ch.classList.add('on'), reduce ? 0 : 180*i+150)));
-}
-const DUR = [5200, 3200, 3600, 4200];
-function loop(){ clearT(); show(step); if(playing) timers.push(setTimeout(()=>{ step = (step+1)%4; loop(); }, DUR[step])); }
-function runDemo(restart){ if(restart) step = 0; loop(); }
-dots.forEach((d,i)=> d.addEventListener('click', ()=>{ step = i; loop(); }));
-document.getElementById('demoToggle').addEventListener('click', e=>{ playing = !playing; e.target.textContent = t(playing?'pause':'play'); loop(); });
-document.getElementById('approveBtn').addEventListener('click', ()=> document.getElementById('sentMsg').classList.add('on'));
-if(reduce){ playing = false; document.getElementById('demoToggle').textContent = t('play'); }
-
-
-// ---------- motion: steps, job record, phone, counters ----------
-const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const onView = (el, fn, th=.35) => { const o = new IntersectionObserver(es=> es.forEach(e=>{ if(e.isIntersecting){ fn(); o.disconnect(); } }), {threshold:th}); o.observe(el); };
-// auto-advancing steps
-const stepEls = [...document.querySelectorAll('.steps .step')]; let si = 0, stepTimer = null;
-function showStep(i){ si = (i + stepEls.length) % stepEls.length; stepEls.forEach((el,j)=>{ el.classList.toggle('active', j===si); const p = el.querySelector('.prog'); if(p){ p.style.animation='none'; void p.offsetWidth; p.style.animation=''; } });
-  document.getElementById('stepCount').textContent = String(si+1).padStart(2,'0') + ' / ' + String(stepEls.length).padStart(2,'0');
-  clearTimeout(stepTimer); if(!REDUCE) stepTimer = setTimeout(()=> showStep(si+1), 3600); }
-document.getElementById('stepNext').addEventListener('click', ()=> showStep(si+1));
-document.getElementById('stepPrev').addEventListener('click', ()=> showStep(si-1));
-onView(document.querySelector('.steps'), ()=> showStep(0));
-// job record timeline (loops)
-const stageEls = [...document.querySelectorAll('#stages li')], rowEls = [...document.querySelectorAll('#jobRows > div')];
-function runRecord(){ let k = 0; stageEls.forEach(li=> li.className=''); rowEls.forEach(r=> r.classList.remove('on'));
-  const st = document.getElementById('jobState'); st.className = 'pill blue'; st.textContent = t('inProgress');
-  const tick = ()=>{ if(k > 0){ stageEls[k-1].className = 'done'; } if(k < stageEls.length){ stageEls[k].className = 'cur'; rowEls[k].classList.add('on'); k++; setTimeout(tick, REDUCE ? 0 : 1300); }
-    else { st.className = 'pill go'; st.textContent = t('done'); if(!REDUCE) setTimeout(runRecord, 4200); } };
-  tick(); }
-onView(document.getElementById('record'), runRecord, .25);
-// phone plan items
-onView(document.querySelector('.phone'), ()=> document.querySelectorAll('.plan-item').forEach((el,i)=> setTimeout(()=> el.classList.add('on'), REDUCE ? 0 : 250*i+200)));
-// counters
-document.querySelectorAll('[data-count]').forEach(el=>{ const end = +el.dataset.count, pre = el.dataset.pre||'', suf = el.dataset.suf||'';
-  onView(el, ()=>{ if(REDUCE) return; const t0 = performance.now(), D = 1200; const f = now=>{ const p = Math.min(1,(now-t0)/D); el.innerHTML = pre + Math.round(end * (1 - Math.pow(1-p,3))) + suf; if(p < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }, .6); });
-
-// ---------- product tour ----------
-const tabs = [...document.querySelectorAll('.tabs button')], panes = [...document.querySelectorAll('.pane')];
-tabs.forEach(b=> b.addEventListener('click', ()=>{ const i = +b.dataset.t; tabs.forEach((x,j)=> x.classList.toggle('on', j===i)); panes.forEach((p,j)=> p.classList.toggle('on', j===i)); }));
-
-// ---------- reveal on scroll ----------
-const io = new IntersectionObserver(es=> es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
-
-// ---------- pilot form ----------
-// Saves to a Supabase table with insert-only access (no one can read submissions from the site).
-// Supabase project in Canada (Central). The publishable key is public by design: the table only accepts inserts.
-const FORM_ENDPOINT = {url:'https://ipinfzrmhgaxdymnuaev.supabase.co', key:'sb_publishable__-TKGkOjHSit4ntla4UKqA_8EQRfhEj', table:'pilot_applications'};
-document.getElementById('applyForm').addEventListener('submit', async ev=>{
-  ev.preventDefault();
-  const f = ev.target, msg = document.getElementById('formMsg');
-  if(!f.checkValidity()){ msg.style.color = 'var(--warn)'; msg.textContent = t('msgCheck'); return; }
-  const fd = Object.fromEntries(new FormData(f)); const data = {name:fd.name, company:fd.company, role:fd.role||null, province:fd.province||null, techs:fd.techs||null, fleets:fd.fleets||null, pain:fd.pain||null, email:fd.email, phone:fd.phone||null, consent:!!fd.consent, lang:LANG, source:(location.origin+location.pathname).slice(0,300)};
-  try{
-    if(!FORM_ENDPOINT) throw new Error('not configured');
-    const r = await fetch(`${FORM_ENDPOINT.url}/rest/v1/${FORM_ENDPOINT.table}`, {method:'POST', headers:{'Content-Type':'application/json', apikey:FORM_ENDPOINT.key, Prefer:'return=minimal'}, body: JSON.stringify(data)});
-    if(!r.ok) throw new Error(r.status);
-    f.reset(); msg.style.color = 'var(--go)'; msg.textContent = t('msgOk');
-  }catch(e){ msg.style.color = 'var(--warn)'; msg.textContent = t('msgErr'); }
-});
-
-try{ const saved = localStorage.getItem('lang'); if(saved === 'fr') setLang('fr'); else runDemo(true); }catch(e){ runDemo(true); }
-</script>
+<script src="main.js"></script>
 </body>
 </html>
