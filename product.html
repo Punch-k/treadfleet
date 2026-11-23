@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How TreadFleet works | From the call to the paid invoice</title>
+<meta name="description" content="Intake, dispatch, torque records and fleet invoices: how TreadFleet handles the office work around every commercial tire job.">
+<meta property="og:title" content="How TreadFleet works | From the call to the paid invoice">
+<meta property="og:description" content="Intake, dispatch, torque records and fleet invoices: how TreadFleet handles the office work around every commercial tire job.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css"><link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="product">
+<div class="hazard"></div>
+<header class="site"><div class="wrap">
+  <a class="logo" href="./"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="5 2.4"/><circle cx="16" cy="16" r="4.5" fill="#ffc21a"/></svg>TreadFleet</a>
+  <nav class="nav" id="nav" aria-label="Main"><a href="product.html" data-i="nProduct" aria-current=page>Product</a><a href="crews.html" data-i="nCrews">Who it's for</a><a href="about.html" data-i="nAbout">About</a><a href="pilot.html" data-i="nPilot">Pilot program</a></nav>
+  <div class="hdr-right">
+    <a class="btn btn-line hdr-app" href="app/?seed=sample" data-i="tryApp">Try the app</a>
+    <div class="lang" role="group" aria-label="Language"><button data-lang="en" class="on">EN</button><button data-lang="fr">FR</button></div>
+    <a class="btn btn-hv" href="pilot.html#apply" data-i="cta">Apply for the pilot</a>
+    <button class="menu-btn" aria-label="Menu" aria-controls="nav" onclick="document.getElementById('nav').classList.toggle('open')"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</div></header>
+<main>
+<section class="photo-hero sub">
+  <div class="bg" style="background-image:url('https://images.pexels.com/photos/6720507/pexels-photo-6720507.jpeg?auto=compress&cs=tinysrgb&w=2000')"></div>
+  <div class="wrap">
+    <p class="kicker" style="color:#c9d0d5" data-i="pKicker">Product</p>
+    <h1 data-i="pH1">From the first call to the paid invoice.</h1>
+    <p class="lead" data-i="pLead">Four jobs TreadFleet takes off your desk. Scroll through them, or follow a single road call below.</p>
+  </div>
+</section>
+
+<section id="process" class="night dk" style="padding:0"><div class="proc" id="proc"><div class="proc-pin"><div class="wrap proc-grid">
+  <div class="proc-head"><p class="kicker" data-i="prKicker" data-html><b>How it works</b> &middot; four steps</p><h2 data-i="prH2">Four jobs off your desk</h2>
+    <div class="rail"><span class="fill" id="railFill"></span>
+      <div class="pstep on"><span class="k">01 &middot; <span data-i="ps1k">INTAKE</span></span><h3 data-i="ps1h">Requests sorted, jobs created</h3><p data-i="ps1">Calls, texts, emails and WhatsApp from fleets land in one inbox. Each becomes a job with the right fleet, unit and PO.</p></div>
+      <div class="pstep"><span class="k">02 &middot; <span data-i="ps2k">DISPATCH</span></span><h3 data-i="ps2h">The right tech, the right tire</h3><p data-i="ps2">Road calls slot in around yard checks: the closest tech with the right size on the truck. You confirm with one click.</p></div>
+      <div class="pstep"><span class="k">03 &middot; <span data-i="ps3k">RECORD</span></span><h3 data-i="ps3h">Every wheel on record</h3><p data-i="ps3">Torque value, pattern, time and tech for every wheel, with re-torque reminders sent on their own.</p></div>
+      <div class="pstep"><span class="k">04 &middot; <span data-i="ps4k">BILL</span></span><h3 data-i="ps4h">Invoiced before you're home</h3><p data-i="ps4">Work done versus quote, extras flagged, provincial tax applied, PO on every line. Approve and it's sent.</p></div>
+    </div>
+    <div class="scroll-hint"><span class="m"></span><span data-i="scrollHint">Keep scrolling</span></div>
+  </div>
+  <div class="proc-view">
+    <div class="pv on"><div class="app"><div class="app-h"><b data-i="inbox">Inbox</b><span class="pill hv" data-i="newReq">4 new requests</span></div><div class="app-b">
+      <div class="msg"><span class="av" style="background:rgba(90,169,255,.18);color:var(--blue)">SMS</span><div><b>Northline Freight</b><p data-i="mg1">&ldquo;4521 steer blew out on the 401 eastbound near km 362&rdquo;</p></div><span class="pill warn arrow" data-i="mgA1">Road call</span></div>
+      <div class="msg"><span class="av" style="background:rgba(60,207,122,.18);color:var(--go)">WA</span><div><b>Prairie Haul</b><p data-i="mg2">&ldquo;Can you do the yard Thursday? 12 units, usual check&rdquo;</p></div><span class="pill blue arrow" data-i="mgA2">Yard check</span></div>
+      <div class="msg"><span class="av" style="background:rgba(255,194,26,.18);color:var(--hv)">@</span><div><b>Westbound Logistics</b><p data-i="mg3">&ldquo;PO WB-505 for the drives on unit 77&rdquo;</p></div><span class="pill go arrow" data-i="mgA3">PO matched</span></div>
+      <div class="msg"><span class="av" style="background:rgba(255,122,61,.18);color:var(--warn)">VM</span><div><b data-i="mgVm">Voicemail</b><p data-i="mg4">&ldquo;Trailer 2 on unit 118 losing air, call back&rdquo;</p></div><span class="pill hv arrow" data-i="mgA4">Job created</span></div>
+    </div></div></div>
+    <div class="pv"><div class="app"><div class="app-h"><b data-i="dispatch">Dispatch &middot; live</b><span class="pill warn" data-i="newRoad">New road call</span></div><div class="app-b" style="padding:0"><div class="map">
+      <svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path class="road" d="M-20 300 C150 280 260 320 380 260 S560 160 640 170"/><path class="road2" d="M120 -20 L180 480"/><path class="road2" d="M420 -20 C400 120 470 300 430 480"/>
+        <path class="route" d="M181 114 L165 290 C230 300 300 300 360 270"/>
+        <circle class="ping" cx="360" cy="270" r="10" fill="#ff7a3d"/><circle cx="360" cy="270" r="7" fill="#ff7a3d"/>
+        <g class="truck-move" id="t3"><rect x="166" y="104" width="30" height="20" rx="5" fill="#ffc21a"/><text x="181" y="118" font-size="11" font-weight="700" text-anchor="middle" fill="#1a1400">T3</text></g>
+        <g opacity=".55"><rect x="455" y="60" width="30" height="20" rx="5" fill="#5aa9ff"/><text x="470" y="74" font-size="11" font-weight="700" text-anchor="middle" fill="#04121f">T1</text></g>
+        <g opacity=".55"><rect x="60" y="380" width="30" height="20" rx="5" fill="#5aa9ff"/><text x="75" y="394" font-size="11" font-weight="700" text-anchor="middle" fill="#04121f">T2</text></g>
+        <text x="372" y="256" font-size="12" fill="#ff9a66" font-weight="700">401 &middot; km 362</text>
+      </svg>
+      <div class="map-card"><div><b data-i="mapT">Marc &middot; Truck 3</b><div style="color:var(--dim)" data-i="mapS">11R22.5 on board &middot; 34 min away</div></div><span class="btn btn-hv" style="padding:8px 14px;font-size:13px" data-i="confirm">Confirm</span></div>
+    </div></div></div></div>
+    <div class="pv"><div class="app"><div class="app-h"><b data-i="torqueT">Torque record &middot; Unit 4521 &middot; Steer L</b><span class="pill go" id="tqState">0 / 10</span></div><div class="app-b">
+      <div class="tq"><svg class="wheel" viewBox="0 0 220 220" aria-hidden="true" id="wheel"><circle cx="110" cy="110" r="104" fill="#1b2026" stroke="#39424c" stroke-width="6"/><circle cx="110" cy="110" r="70" fill="#14181c" stroke="#2b323a" stroke-width="3"/><circle cx="110" cy="110" r="24" fill="#2b323a"/></svg>
+        <div><div class="gauge"><span id="gauge">0</span><small>ft-lb</small></div><div style="color:var(--dim);font-size:13px;margin:4px 0 14px" data-i="pattern">Crisscross pattern &middot; spec 450 ft-lb</div>
+          <div class="tq-log"><div><span data-i="tqTech">Tech</span><b>Marc T.</b></div><div><span data-i="tqWrench">Wrench</span><b data-i="tqWrenchV">Calibrated Mar 2026</b></div><div><span data-i="tqRe">Re-torque</span><b data-i="tqReV">Reminder at 80 km</b></div></div></div></div>
+    </div></div></div>
+    <div class="pv"><div class="app"><div class="app-h"><b>INV-1187 &middot; Northline Freight</b><span class="pill go" data-i="ready">Ready to approve</span></div><div class="app-b">
+      <table class="inv"><tr><th data-i="thItem">Item</th><th>CAD</th></tr>
+        <tr><td>11R22.5 16-ply &middot; <span data-i="docPos">Steer left</span></td><td>612.00</td></tr><tr><td data-i="itRoad2">Road call + labour 1.5 h</td><td>285.00</td></tr><tr><td data-i="itCasing2">Casing credit</td><td>&minus;40.00</td></tr>
+        <tr><td id="taxLbl">HST 13%</td><td id="taxV">111.41</td></tr><tr class="t"><td>Total</td><td id="totV">968.41</td></tr></table>
+      <div class="prov" id="prov"></div><div style="color:var(--dim);font-size:12.5px" data-i="provNote">Pick a province: tax is calculated, never guessed.</div>
+      <div class="attach"><span data-i="attWo">Work order</span><span data-i="attTq">Torque record</span><span data-i="attPh">3 photos</span></div>
+      <div class="inv-act"><span class="pill go">PO 77812 &#10003;</span><span class="pill go" data-i="unitOk">Unit 4521 &#10003;</span><span class="btn btn-hv" style="margin-left:auto;padding:9px 16px;font-size:13px" data-i="approve">Approve and send</span></div>
+    </div></div></div>
+  </div>
+</div></div></div></section>
+
+<section id="day">
+  <div class="wrap">
+    <div class="sec-h reveal"><p class="kicker" data-i="dKicker" data-html><b>One road call</b> &middot; job 1187</p><h2 data-i="dH2">One road call. One record that writes itself.</h2><p data-i="dLead">Follow job 1187 from the first text to the re-torque, the way the office sees it.</p></div>
+    <div class="day dk lt reveal">
+      <div class="day-tabs" id="dayTabs">
+        <button class="on"><span class="no">01</span><span data-i="dt1">Call comes in</span><span class="ck">&#10003;</span><i class="pg"></i></button>
+        <button><span class="no">02</span><span data-i="dt2">Tech dispatched</span><span class="ck">&#10003;</span><i class="pg"></i></button>
+        <button><span class="no">03</span><span data-i="dt3">Voice note at the truck</span><span class="ck">&#10003;</span><i class="pg"></i></button>
+        <button><span class="no">04</span><span data-i="dt4">Torque logged</span><span class="ck">&#10003;</span><i class="pg"></i></button>
+        <button><span class="no">05</span><span data-i="dt5">Invoice approved</span><span class="ck">&#10003;</span><i class="pg"></i></button>
+        <button><span class="no">06</span><span data-i="dt6">Re-torque confirmed</span><span class="ck">&#10003;</span><i class="pg"></i></button>
+      </div>
+      <div class="appwin"><div class="win-bar"><i></i><i></i><i></i><span class="url">TreadFleet &middot; Jobs &middot; 1187</span></div>
+        <div class="win-body">
+          <div class="side"><div class="brand">TreadFleet</div><span data-i="sd1">Today</span><span data-i="sd2">Dispatch</span><span class="on" data-i="sd3">Jobs</span><span data-i="sd4">Fleets</span><span data-i="sd5">Stock</span><span data-i="sd6">Invoices</span></div>
+          <div>
+            <div class="dpane on"><h4 data-i="d1h">New road call</h4><div class="sub">07:42 &middot; SMS &middot; Northline Freight</div>
+              <div class="card-l"><div class="row"><span data-i="lbUnit">Unit</span><b>4521</b></div><div class="row"><span data-i="lbProb">Problem</span><b data-i="d1p">Steer blowout</b></div><div class="row"><span data-i="lbLoc">Location</span><b>401 EB &middot; km 362</b></div><div class="row"><span>PO</span><b>77812 <span style="color:#1e9e57">&#10003;</span></b></div></div>
+              <div class="srcs"><span data-i="srcSms">from SMS</span><span data-i="srcHist">fleet history</span></div></div>
+            <div class="dpane"><h4 data-i="d2h">Marc is on the way</h4><div class="sub" data-i="d2s">Closest tech with the size on board</div>
+              <div class="card-l"><div class="row"><span data-i="lbTech">Tech</span><b>Marc T. &middot; Truck 3</b></div><div class="row"><span>ETA</span><b>34 min</b></div><div class="row"><span data-i="lbOnboard">On board</span><b>11R22.5 &times; 2</b></div><div class="row"><span data-i="lbBrief">Briefing sent</span><b data-i="d2b">Unit history, packing list</b></div></div></div>
+            <div class="dpane"><h4 data-i="d3h">Voice note, sorted</h4><div class="sub">08:44 &middot; 0:38 &middot; <span data-i="d3s">transcribed and sorted</span></div>
+              <div class="live-trans" id="dayTrans"></div>
+              <div class="extract" id="dayEx"><div><small data-i="exPos">Position</small><b data-i="exPosV">Steer &middot; Left</b></div><div><small data-i="exRem">Removed</small><b>6/32 &middot; casing OK</b></div><div><small data-i="exIns">Installed</small><b>11R22.5 16-ply</b></div><div><small data-i="exTq">Torque</small><b>450 ft-lb</b></div><div><small data-i="exLab">Labour</small><b>1.5 h</b></div><div><small data-i="exPh">Photos</small><b data-i="exPhV">3 attached</b></div></div></div>
+            <div class="dpane"><h4 data-i="d4h">Torque on record</h4><div class="sub" data-i="d4s">Saved with the job, ready for any audit</div>
+              <div class="card-l"><div class="row"><span data-i="lbVal">Value</span><b>450 ft-lb &middot; 10/10</b></div><div class="row"><span data-i="lbPat">Pattern</span><b data-i="d4p">Crisscross</b></div><div class="row"><span data-i="lbTime">Time</span><b>08:51</b></div><div class="row"><span data-i="lbRe">Re-torque</span><b data-i="d4r">Reminder set &middot; 80 km</b></div></div></div>
+            <div class="dpane"><h4 data-i="d5h">Invoice approved and sent</h4><div class="sub" data-i="d5s">Approved from the owner's phone at 09:02</div>
+              <div class="card-l"><div class="row"><span data-i="lbInv">Invoice</span><b>INV-1187</b></div><div class="row"><span data-i="lbTot">Total</span><b>$968.41 CAD</b></div><div class="row"><span data-i="lbTo">Sent to</span><b>Northline Freight AP</b></div><div class="row"><span data-i="lbAtt">Attached</span><b data-i="d5a">Work order, torque record, photos</b></div></div></div>
+            <div class="dpane"><h4 data-i="d6h">Re-torque confirmed</h4><div class="sub" data-i="d6s">Driver confirmed by text at 82 km</div>
+              <div class="card-l"><div class="row"><span data-i="lbStatus">Status</span><b style="color:#1e9e57" data-i="d6st">Job closed</b></div><div class="row"><span data-i="lbFile">Job file</span><b data-i="d6f">6 entries, complete</b></div><div class="row"><span data-i="lbStock">Stock</span><b>Truck 3 &middot; 11R22.5: 2 &rarr; 1</b></div><div class="row"><span data-i="lbCasing">Casing</span><b data-i="d6c">Queued for retreader credit</b></div></div></div>
+          </div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="night dk" id="app">
+  <div class="wrap promo">
+    <div><p class="kicker" data-i="aKicker" data-html><b>On the road</b> &middot; the tech's phone</p><h2 style="font-size:clamp(30px,3.6vw,46px);margin:0 0 16px" data-i="aH2">Your techs get one big button.</h2>
+      <p style="color:#c4ccd2;font-size:18px;margin:0" data-i="aLead">Today's plan, the job and a record button. Same login as the office. No forms, no typing with gloves on.</p>
+      <ul class="feat"><li><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><div data-i="f1" data-html><b>Today's plan</b>Yard checks and road calls in order, with each unit's history.</div></li>
+        <li><svg class="ic" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><div data-i="f2" data-html><b>One tap to the job</b>Call the driver or open navigation.</div></li>
+        <li><svg class="ic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg><div data-i="f3" data-html><b>Press and talk</b>English or French. Photos attach to the right wheel.</div></li></ul></div>
+    <div class="ph reveal" id="promoPh"><div class="ph-in">
+      <div style="display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin-bottom:8px"><span>9:41</span><span>LTE</span></div>
+      <b style="font:800 18px Archivo;margin:0 2px 10px" data-i="phToday">Today &middot; Luc</b>
+      <div class="plan"><b>07:00 &middot; <span data-i="phYard">Yard check</span></b><small>Prairie Haul &middot; 12 units</small></div><div class="plan road"><b data-i="phRoad">09:20 &middot; Road call</b><small>401 &middot; km 362</small></div><div class="plan"><b>11:30 &middot; Unit 118</b><small data-i="phU">Drive R inner &middot; replace</small></div><div class="plan"><b>14:00 &middot; Westbound</b><small data-i="phW">Re-torque &middot; 3 units</small></div>
+      <div class="bigrec" data-i="talk">Talk</div>
+    </div></div>
+  </div>
+</section>
+
+<section style="padding:80px 0">
+  <div class="wrap cta">
+    <div><p class="kicker" data-i="ctaKicker">Pilot program &middot; free for three months</p><h2 data-i="ctaH2">Run your next road call through TreadFleet.</h2></div>
+    <a class="btn btn-hv" href="pilot.html#apply"><span data-i="cta">Apply for the pilot</span><span class="arr">&rarr;</span></a>
+  </div>
+</section>
+
+</main>
+<footer class="site"><div class="wrap">
+  <div class="cols">
+    <div><a class="logo" href="./"><svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="5 2.4"/><circle cx="16" cy="16" r="4.5" fill="#ffc21a"/></svg>TreadFleet</a><p data-i="fTag" style="margin:0;max-width:30em">Office software for commercial tire crews. Built in Canada, in English and French.</p></div>
+    <div><h5 data-i="fProduct">Product</h5><a href="product.html" data-i="fHow">How it works</a><a href="product.html#day" data-i="fDay">One road call</a><a href="crews.html" data-i="nCrews">Who it's for</a><a href="app/?seed=sample" data-i="tryApp">Try the app</a></div>
+    <div><h5 data-i="fCompany">Company</h5><a href="about.html" data-i="nAbout">About</a><a href="pilot.html" data-i="nPilot">Pilot program</a><a href="pilot.html#faq" data-i="fFaq">FAQ</a></div>
+    <div><h5 data-i="fLegal">Legal</h5><a href="privacy.html" data-i="fPrivacy">Privacy</a><a href="terms.html" data-i="fTerms">Terms</a></div>
+  </div>
+  <div class="base"><span>&copy; 2026 TreadFleet &middot; <span data-i="fMade">Made in Canada</span></span><span data-i="fPhotos">Photos: Pexels</span></div>
+</div></footer>
+<script src="assets/fr.js"></script><script src="assets/site.js"></script><script src="assets/product.js"></script>
+</body>
+</html>
